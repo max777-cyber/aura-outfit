@@ -1,0 +1,331 @@
+:root {
+    --lilas: #CD69C9;
+    --purple: purple;
+
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+
+    --border: #2a2a2a;
+
+    --text: #f0f0f0;
+    --muted: #888;
+
+    /* Compatibilidade */
+    --green: #CD69C9;
+    --green-dark: purple;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* NAV */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+
+    padding: 16px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 4px;
+    color: var(--green);
+}
+
+nav ul {
+    list-style: none;
+
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+nav ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: color 0.2s;
+}
+
+nav ul a:hover {
+    color: var(--text);
+}
+
+/* CONTAINER */
+
+.container {
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 60px 20px;
+}
+
+/* BOX */
+
+.box {
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    padding: 56px 48px;
+
+    text-align: center;
+
+    max-width: 500px;
+    width: 100%;
+
+    animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ÍCONE */
+
+.icone {
+    width: 80px;
+    height: 80px;
+
+    background: #696969;
+
+    border: 2px solid var(--green);
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 36px;
+
+    margin: 0 auto 28px;
+}
+
+/* TEXTOS */
+
+.box h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    letter-spacing: 2px;
+
+    margin-bottom: 10px;
+}
+
+.subtitulo {
+    color: var(--muted);
+
+    font-size: 15px;
+    line-height: 1.6;
+
+    margin-bottom: 32px;
+}
+
+/* PEDIDO */
+
+.numero-pedido {
+    background: var(--surface2);
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    padding: 16px 24px;
+
+    margin-bottom: 28px;
+}
+
+.numero-pedido .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    color: var(--muted);
+
+    margin-bottom: 6px;
+}
+
+.numero-pedido .valor {
+    font-family: 'Bebas Neue', sans-serif;
+
+    font-size: 32px;
+    letter-spacing: 3px;
+
+    color: var(--green);
+}
+
+/* STATUS */
+
+.info-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: #f0f0f0;
+
+    border: 1px solid var(--green);
+    border-radius: 8px;
+
+    padding: 10px 16px;
+
+    font-size: 13px;
+    color: var(--green);
+
+    margin-bottom: 32px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+
+    background: var(--green);
+
+    border-radius: 50%;
+
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* AÇÕES */
+
+.acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-primary {
+    padding: 14px;
+
+    background: var(--green);
+
+    border: none;
+    border-radius: 10px;
+
+    color: #000;
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    display: block;
+
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: var(--green-dark);
+}
+
+.btn-ghost {
+    padding: 12px;
+
+    background: transparent;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    color: var(--muted);
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+
+    text-decoration: none;
+
+    display: block;
+
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-ghost:hover {
+    border-color: var(--green);
+    color: var(--green);
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+
+    padding: 24px;
+
+    color: #444;
+    font-size: 13px;
+
+    border-top: 1px solid var(--border);
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 600px) {
+
+    nav {
+        padding: 12px 16px;
+    }
+
+    .box {
+        padding: 40px 24px;
+    }
+
+    .box h1 {
+        font-size: 32px;
+    }
+
+    .numero-pedido .valor {
+        font-size: 26px;
+    }
+}

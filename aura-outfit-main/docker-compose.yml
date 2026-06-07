@@ -1,0 +1,21 @@
+services:
+  aura-outfit:
+    build: .
+    container_name: aura-outfit
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:h2:file:/app/data/aura_outfit;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+      SPRING_DATASOURCE_USERNAME: sa
+      SPRING_DATASOURCE_PASSWORD: ""
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+      APP_FRONTEND_URL: http://localhost:8080
+      APP_CORS_ALLOWED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+    volumes:
+      - aura-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  aura-data:

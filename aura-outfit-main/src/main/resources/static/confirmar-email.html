@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmar e-mail - Aura Outfit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<nav>
+    <a href="/" class="logo">AURA OUTFIT</a>
+    <ul>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/login">Login</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+    <section class="box status-box">
+        <h1 id="tituloStatus">Confirmando e-mail...</h1>
+        <p id="textoStatus">Aguarde um instante.</p>
+        <a class="status-btn" href="/login">Ir para o login</a>
+    </section>
+</main>
+
+<footer>&copy; 2026 Aura Outfit - Todos os direitos reservados</footer>
+
+<script>
+const API = "http://localhost:8080";
+
+async function confirmarEmail() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const titulo = document.getElementById("tituloStatus");
+    const texto = document.getElementById("textoStatus");
+
+    if (!token) {
+        titulo.textContent = "Link invalido";
+        texto.textContent = "O token de confirmacao nao foi encontrado.";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/api/usuarios/confirmar-email?token=${encodeURIComponent(token)}`);
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            titulo.textContent = "Nao foi possivel confirmar";
+            texto.textContent = data.erro || "O link pode estar invalido ou ja ter sido usado.";
+            return;
+        }
+
+        titulo.textContent = "E-mail confirmado";
+        texto.textContent = "Sua conta esta liberada. Agora voce ja pode entrar.";
+    } catch {
+        titulo.textContent = "Erro de conexao";
+        texto.textContent = "Tente abrir o link novamente em alguns segundos.";
+    }
+}
+
+confirmarEmail();
+</script>
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
+

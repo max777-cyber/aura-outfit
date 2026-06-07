@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - Aura Outfit</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/carrinho.css">
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+
+<nav>
+    <a href="/" class="logo">AURA OUTFIT</a>
+</nav>
+
+<header class="cart-hero">
+    <div class="hero-copy">
+        <span>Sua sacola</span>
+        <h1>Aura <strong>Outfit</strong></h1>
+        <p>Revise seus itens e finalize seu pedido.</p>
+        <div class="hero-line"></div>
+    </div>
+</header>
+
+<main class="page">
+    <section class="itens-col" id="itens">
+        <div class="vazio">Carregando...</div>
+    </section>
+
+    <aside class="resumo">
+        <h2>Resumo do pedido</h2>
+
+        <div class="resumo-linha">
+            <span>Subtotal</span>
+            <span id="subtotal">R$ 0,00</span>
+        </div>
+
+        <div class="resumo-linha">
+            <span>Frete</span>
+            <span id="freteValor">-</span>
+        </div>
+
+        <div class="frete-box">
+            <label>Calcular frete</label>
+
+            <div class="frete-input-row">
+                <input
+                    type="text"
+                    id="cepInput"
+                    placeholder="Digite seu CEP"
+                    maxlength="9"
+                    oninput="mascaraCep(this)"
+                />
+
+                <button
+                    class="btn-cep"
+                    onclick="calcularFrete()"
+                    id="btnCep">
+                    Calcular
+                </button>
+            </div>
+
+            <p class="frete-erro" id="freteErro"></p>
+
+            <div class="frete-resultado" id="freteResultado">
+                <p class="frete-endereco" id="freteEndereco"></p>
+                <div class="frete-opcoes" id="freteOpcoes"></div>
+            </div>
+        </div>
+
+        <div class="resumo-linha total">
+            <span>Total</span>
+            <span id="total">R$ 0,00</span>
+        </div>
+
+        <button
+            class="btn-finalizar"
+            onclick="finalizar()"
+            id="btnFinalizar">
+            Finalizar pedido
+        </button>
+
+        <a class="btn-continuar" href="/">Continuar comprando</a>
+        <button class="btn-limpar" onclick="limpar()">Limpar carrinho</button>
+
+        <p class="secure-note">Ambiente 100% seguro</p>
+
+        <div class="msg msg-ok" id="msgOk"></div>
+        <div class="msg msg-err" id="msgErr"></div>
+    </aside>
+
+    <section class="benefits">
+        <div class="benefit">
+            <span>Lock</span>
+            <strong>Pagamento seguro</strong>
+            <small>Seus dados protegidos</small>
+        </div>
+        <div class="benefit">
+            <span>Truck</span>
+            <strong>Frete para todo o Brasil</strong>
+            <small>Entrega rapida e segura</small>
+        </div>
+        <div class="benefit">
+            <span>Star</span>
+            <strong>Qualidade premium</strong>
+            <small>Pecas selecionadas</small>
+        </div>
+        <div class="benefit">
+            <span>Help</span>
+            <strong>Suporte dedicado</strong>
+            <small>Atendimento humanizado</small>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div>
+        <strong>AURA OUTFIT</strong>
+        <span>Urban. Autentico. Aura.</span>
+    </div>
+    <p>2026 Aura Outfit - Todos os direitos reservados.</p>
+</footer>
+
+<script src="carrinho.js"></script>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
+

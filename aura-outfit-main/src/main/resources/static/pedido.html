@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado - Aura Outfit</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/pedido.css">
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<nav>
+    <span class="logo">AURA OUTFIT</span>
+
+    <ul>
+        <li><a href="/">InÃ­cio</a></li>
+        <li><a href="/carrinho.html">Carrinho</a></li>
+        <li><a href="/perfil.html">Perfil</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <div class="box">
+
+        <div class="icone" id="icone">âœ“</div>
+
+        <h1 id="titulo">Pedido Confirmado!</h1>
+
+        <p class="subtitulo" id="subtitulo">
+            Seu pedido foi realizado com sucesso.<br>
+            Acompanhe o status na sua Ã¡rea de perfil.
+        </p>
+
+        <div class="numero-pedido">
+            <p class="label">NÃºmero do Pedido</p>
+            <p class="valor" id="numeroPedido">---</p>
+        </div>
+
+        <div class="info-status" id="infoStatus">
+            <div class="dot"></div>
+
+            <span id="statusTexto">
+                Status: <strong>Pendente</strong> â€” em processamento
+            </span>
+        </div>
+
+        <div class="acoes">
+            <a href="/index.html" class="btn-primary">
+                Continuar Comprando
+            </a>
+
+            <a href="/meus-pedidos.html" class="btn-ghost">
+                Ver Meus Pedidos
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    Â© 2026 Aura Outfit â€” Todos os direitos reservados
+</footer>
+
+<script>
+const API = "http://localhost:8080";
+
+// â”€â”€â”€ Recupera o pedido salvo apÃ³s finalizar no carrinho â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function carregarPedido() {
+
+    // 1ï¸âƒ£ Tenta pegar o pedidoId da URL
+    const params = new URLSearchParams(window.location.search);
+
+    let pedidoId = params.get("pedidoId");
+
+    const statusVolta = params.get("status");
+    const statusMP = params.get("collection_status");
+
+    // 2ï¸âƒ£ Se nÃ£o veio pela URL, tenta da sessionStorage
+    if (!pedidoId) {
+        pedidoId = sessionStorage.getItem("ultimoPedidoId");
+    }
+
+    // 3ï¸âƒ£ Ãšltimo recurso: busca Ãºltimo pedido do usuÃ¡rio
+    if (!pedidoId) {
+
+        try {
+
+            const resSessao = await fetch(`${API}/api/usuarios/sessao`, {
+                credentials: "include"
+            });
+
+            const sessao = await resSessao.json();
+
+            if (sessao.logado) {
+
+                const resPedidos = await fetch(
+                    `${API}/api/pedidos/usuario/${sessao.id}`,
+                    {
+                        credentials: "include"
+                    }
+                );
+
+                if (resPedidos.ok) {
+
+                    const pedidos = await resPedidos.json();
+
+                    if (pedidos.length > 0) {
+                        pedidoId = pedidos[pedidos.length - 1].id;
+                    }
+                }
+            }
+
+        } catch {}
+    }
+
+    if (!pedidoId) {
+        document.getElementById("numeroPedido").textContent = "---";
+        return;
+    }
+
+    document.getElementById("numeroPedido").textContent =
+        "#" + String(pedidoId).padStart(5, "0");
+
+    sessionStorage.removeItem("ultimoPedidoId");
+
+    const aprovado =
+        (statusVolta === "aprovado") ||
+        (statusMP === "approved");
+
+    const pendente =
+        (statusVolta === "pendente") ||
+        (statusMP === "pending") ||
+        (statusMP === "in_process");
+
+    const falhou =
+        (statusVolta === "falhou") ||
+        (statusMP === "rejected") ||
+        (statusMP === "cancelled");
+
+    if (aprovado) {
+
+        await confirmarPagamentoNoBackend(pedidoId);
+
+        atualizarUI("aprovado");
+
+        if (window.history.replaceState) {
+            window.history.replaceState(
+                {},
+                document.title,
+                "/pedido"
+            );
+        }
+
+    } else if (pendente) {
+
+        atualizarUI("pendente");
+
+    } else if (falhou) {
+
+        atualizarUI("falhou");
+
+    } else {
+
+        atualizarUI("pendente");
+    }
+}
+
+async function confirmarPagamentoNoBackend(pedidoId) {
+
+    try {
+
+        const res = await fetch(
+            `${API}/api/pagamento/simular-pagamento/${pedidoId}`,
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+        if (!res.ok) {
+            console.warn(
+                "NÃ£o foi possÃ­vel confirmar o pagamento"
+            );
+        }
+
+    } catch (e) {
+
+        console.warn("Erro ao confirmar pagamento:", e);
+    }
+}
+
+function atualizarUI(estado) {
+
+    const icone = document.getElementById("icone");
+    const titulo = document.getElementById("titulo");
+    const subtitulo = document.getElementById("subtitulo");
+    const status = document.getElementById("statusTexto");
+    const infoBox = document.getElementById("infoStatus");
+
+    if (estado === "aprovado") {
+
+        icone.textContent = "âœ“";
+
+        titulo.textContent = "Pagamento Aprovado!";
+
+        subtitulo.innerHTML =
+            "Tudo certo! Seu pedido jÃ¡ foi confirmado.<br>" +
+            "Em breve vocÃª receberÃ¡ o cÃ³digo de rastreio por e-mail.";
+
+        status.innerHTML =
+            "Status: <strong>Pago</strong> â€” pedido em separaÃ§Ã£o";
+
+    } else if (estado === "falhou") {
+
+        icone.textContent = "âœ—";
+
+        icone.style.background = "#2e0a0a";
+        icone.style.borderColor = "#e74c3c";
+        icone.style.color = "#e74c3c";
+
+        titulo.textContent = "Pagamento nÃ£o aprovado";
+
+        subtitulo.innerHTML =
+            "Houve um problema com seu pagamento.<br>" +
+            "VocÃª pode tentar novamente pelo carrinho.";
+
+        infoBox.style.background = "#2e0a0a";
+        infoBox.style.borderColor = "#e74c3c";
+        infoBox.style.color = "#e74c3c";
+
+        status.innerHTML =
+            "Status: <strong>Cancelado</strong>";
+
+    } else {
+
+        icone.textContent = "â³";
+
+        titulo.textContent = "Pedido Confirmado!";
+
+        subtitulo.innerHTML =
+            "Seu pedido foi realizado.<br>" +
+            "Aguardando confirmaÃ§Ã£o do pagamento.";
+
+        status.innerHTML =
+            "Status: <strong>Pendente</strong> â€” em processamento";
+    }
+}
+
+carregarPedido();
+</script>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+

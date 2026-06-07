@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meus pedidos - Aura Outfit</title>
+  <link rel="stylesheet" href="css/meus-pedidos.css">
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav>
+    <a href="/index.html" class="logo">AURA OUTFIT</a>
+  </nav>
+
+  <main class="pedidos-shell">
+    <header class="pedidos-topo">
+      <div>
+        <h1>Meus pedidos</h1>
+        <p>Acompanhe o status e historico das suas compras.</p>
+      </div>
+
+      <div class="pedidos-controles">
+        <label class="campo-busca">
+          <input type="search" id="buscaPedido" placeholder="Buscar pedido..." oninput="filtrarPedidos()">
+          <span>Search</span>
+        </label>
+        <select id="filtroStatusPedido" onchange="filtrarPedidos()">
+          <option value="">Todos os status</option>
+          <option value="andamento">Em andamento</option>
+          <option value="entregue">Entregues</option>
+          <option value="cancelado">Cancelados</option>
+        </select>
+      </div>
+    </header>
+
+    <section class="stats-grid">
+      <article class="stat-card">
+        <span class="stat-icon">Bag</span>
+        <div>
+          <strong id="totalPedidos">--</strong>
+          <small>Todos os pedidos</small>
+        </div>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">Run</span>
+        <div>
+          <strong id="pedidosAndamento">--</strong>
+          <small>Em andamento</small>
+        </div>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">Ok</span>
+        <div>
+          <strong id="pedidosEntregues">--</strong>
+          <small>Entregues</small>
+        </div>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">Off</span>
+        <div>
+          <strong id="pedidosCancelados">--</strong>
+          <small>Cancelados</small>
+        </div>
+      </article>
+    </section>
+
+    <section id="listaPedidos" class="pedidos-lista">
+      <div class="vazio">Carregando pedidos...</div>
+    </section>
+
+    <div class="paginacao">
+      <button type="button" disabled>&lt;</button>
+      <button type="button" class="ativo">1</button>
+      <button type="button" disabled>&gt;</button>
+    </div>
+  </main>
+
+  <footer>
+    <div>
+      <strong>AURA OUTFIT</strong>
+      <span>Urban. Autentico. Aura.</span>
+    </div>
+    <p>2026 Aura Outfit - Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="meus-pedidos.js"></script>
+  <script src="js/nav-user.js"></script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aura Outfit - Meu Perfil</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/perfil.css">
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo">AURA OUTFIT</a>
+    <ul>
+      <li><a href="/">Inicio</a></li>
+      <li><a href="/carrinho">Carrinho</a></li>
+      <li><a href="/meus-pedidos.html">Pedidos</a></li>
+      <li><a href="/perfil" class="active">Perfil</a></li>
+      <li><a href="#" class="nav-sair" onclick="sair()">Sair</a></li>
+    </ul>
+  </nav>
+
+  <header class="perfil-hero">
+  </header>
+
+  <main class="perfil-shell">
+    <section class="perfil-card-top">
+      <div class="perfil-identidade">
+        <div class="avatar-area">
+          <label class="avatar-upload" for="inputFotoPerfil" title="Trocar foto de perfil">
+            <div class="avatar-grande" id="avatar">--</div>
+            <span class="avatar-camera">Foto</span>
+          </label>
+          <input type="file" id="inputFotoPerfil" accept="image/png,image/jpeg,image/webp" hidden />
+          <button class="btn-avatar" id="btnRemoverFoto" onclick="removerFotoPerfil()" style="display:none">Remover</button>
+        </div>
+
+        <div class="perfil-nome-area">
+          <h2 id="nomeHeader">Carregando...</h2>
+          <p id="emailHeader">carregando@email.com</p>
+        </div>
+      </div>
+
+      <div class="perfil-stats">
+        <div class="mini-stat">
+          <span class="stat-icon">Bag</span>
+          <strong id="totalPedidosResumo">--</strong>
+          <small>Pedidos</small>
+        </div>
+        <div class="mini-stat">
+          <span class="stat-icon">Fav</span>
+          <strong>0</strong>
+          <small>Favoritos</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="alerta" id="alertaIncompleto" style="display:none">
+      <div class="alerta-inner">
+        <div class="alerta-texto">
+          <div class="alerta-icon">!</div>
+          <span>Complete seus dados para agilizar suas compras</span>
+        </div>
+        <button class="btn-alerta" onclick="mostrarPainel('informacoes')">Completar</button>
+      </div>
+    </div>
+
+    <section class="cards-grid">
+      <button class="card-item" id="card-informacoes" onclick="mostrarPainel('informacoes')">
+        <span class="card-icon">ID</span>
+        <h3>Informacoes pessoais</h3>
+        <p>Gerencie seus dados pessoais e documentos.</p>
+        <span class="card-arrow">-></span>
+      </button>
+
+      <button class="card-item" id="card-enderecos" onclick="mostrarPainel('enderecos')">
+        <span class="card-icon">PIN</span>
+        <h3>Endereco</h3>
+        <p>Gerencie endereco de entrega e cobranca.</p>
+        <span class="card-arrow">-></span>
+        <span class="card-badge-alerta" id="badgeEndereco" style="display:none"></span>
+      </button>
+
+      <button class="card-item" id="card-seguranca" onclick="mostrarPainel('seguranca')">
+        <span class="card-icon">SEC</span>
+        <h3>Seguranca</h3>
+        <p>Altere sua senha e configuracoes de seguranca.</p>
+        <span class="card-arrow">-></span>
+      </button>
+
+      <button class="card-item" id="card-pedidos" onclick="window.location.href='/meus-pedidos.html'">
+        <span class="card-icon">BOX</span>
+        <h3>Meus pedidos</h3>
+        <p>Acompanhe o status e historico de compras.</p>
+        <span class="card-arrow">-></span>
+      </button>
+    </section>
+
+    <section class="resumo-grid">
+      <article class="resumo-card">
+        <div class="resumo-head">
+          <h3>Ultimo pedido</h3>
+          <button onclick="window.location.href='/meus-pedidos.html'">Ver todos</button>
+        </div>
+        <div class="ultimo-pedido" id="ultimoPedidoResumo">
+          <div class="vazio compacto">Carregando pedidos...</div>
+        </div>
+      </article>
+
+      <article class="resumo-card">
+        <div class="resumo-head">
+          <h3>Endereco principal</h3>
+          <button onclick="mostrarPainel('enderecos')">Editar</button>
+        </div>
+        <div class="endereco-resumo">
+          <div id="enderecoResumo">
+            <strong>Nenhum endereco cadastrado</strong>
+            <span>Adicione um endereco para agilizar sua compra.</span>
+          </div>
+          <div class="map-preview">PIN</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="painel" id="painel-informacoes">
+      <div class="painel-card">
+        <h2>Informacoes pessoais</h2>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Nome completo</label>
+            <input type="text" id="inputNome" placeholder="Seu nome completo" />
+          </div>
+
+          <div class="info-item">
+            <label>E-mail</label>
+            <input type="email" id="inputEmail" readonly />
+          </div>
+
+          <div class="info-item">
+            <label>CPF</label>
+            <input type="text" id="inputCpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCpf(this)" />
+          </div>
+
+          <div class="info-item">
+            <label>Telefone</label>
+            <input type="text" id="inputTelefone" placeholder="(11) 98765-4321" maxlength="15" oninput="mascaraTelefone(this)" />
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="cancelarEdicao()">Cancelar</button>
+          <button class="btn-primary" onclick="salvarDadosPessoais()">Salvar</button>
+        </div>
+
+        <div class="msg msg-ok" id="msgOkInfo">Dados atualizados com sucesso!</div>
+        <div class="msg msg-err" id="msgErrInfo"></div>
+      </div>
+    </section>
+
+    <section class="painel" id="painel-enderecos">
+      <div class="painel-card">
+        <h2>Endereco de entrega</h2>
+
+        <div class="info-grid cols-cep">
+          <div class="info-item">
+            <label>CEP</label>
+            <div class="cep-row">
+              <input type="text" id="inputCep" placeholder="00000-000" maxlength="9" oninput="mascaraCep(this)" />
+              <button class="btn-cep" onclick="buscarCep()" id="btnBuscarCep">Buscar</button>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Logradouro</label>
+            <input type="text" id="inputLogradouro" placeholder="Rua, Avenida..." />
+          </div>
+
+          <div class="info-item">
+            <label>Numero</label>
+            <input type="text" id="inputNumero" placeholder="N." />
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Bairro</label>
+            <input type="text" id="inputBairro" placeholder="Bairro" />
+          </div>
+
+          <div class="info-item">
+            <label>Complemento</label>
+            <input type="text" id="inputComplemento" placeholder="Apto, bloco (opcional)" />
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Cidade</label>
+            <input type="text" id="inputCidade" placeholder="Cidade" />
+          </div>
+
+          <div class="info-item">
+            <label>Estado (UF)</label>
+            <input type="text" id="inputUf" placeholder="SP" maxlength="2" />
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="cancelarEdicao()">Cancelar</button>
+          <button class="btn-primary" onclick="salvarEndereco()">Salvar endereco</button>
+        </div>
+
+        <div class="msg msg-ok" id="msgOkEnd">Endereco salvo com sucesso!</div>
+        <div class="msg msg-err" id="msgErrEnd"></div>
+      </div>
+    </section>
+
+    <section class="painel" id="painel-seguranca">
+      <div class="painel-card">
+        <h2>Seguranca</h2>
+
+        <div class="seguranca-item">
+          <div class="seguranca-info">
+            <h4>E-mail</h4>
+            <p id="segEmail">--</p>
+          </div>
+        </div>
+
+        <div class="seguranca-item">
+          <div class="seguranca-info">
+            <h4>Senha</h4>
+            <p>Recomendamos trocar sua senha regularmente</p>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Nova senha</label>
+            <input type="password" id="inputSenha" placeholder="Deixe em branco para manter" />
+          </div>
+
+          <div class="info-item">
+            <label>Confirmar nova senha</label>
+            <input type="password" id="inputSenhaConfirm" placeholder="Repita a nova senha" />
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-danger" onclick="sair()">Sair da conta</button>
+          <button class="btn-primary" onclick="salvarSenha()">Atualizar senha</button>
+        </div>
+
+        <div class="msg msg-ok" id="msgOkSeg">Senha atualizada!</div>
+        <div class="msg msg-err" id="msgErrSeg"></div>
+      </div>
+    </section>
+
+    <section class="painel" id="painel-pedidos">
+      <div class="pedidos-page">
+        <div class="pedidos-top">
+          <div>
+            <h2>Meus pedidos</h2>
+            <p>Acompanhe o status e historico das suas compras.</p>
+          </div>
+
+          <div class="pedidos-filtros">
+            <input type="search" id="buscaPedido" placeholder="Buscar pedido..." oninput="filtrarPedidos()" />
+            <select id="filtroStatusPedido" onchange="filtrarPedidos()">
+              <option value="">Todos os status</option>
+              <option value="andamento">Em andamento</option>
+              <option value="entregue">Entregues</option>
+              <option value="cancelado">Cancelados</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="stats-grid pedidos-stats">
+          <div class="stat-card">
+            <span class="stat-icon">All</span>
+            <div>
+              <div class="stat-valor" id="totalPedidos">--</div>
+              <div class="stat-label">Todos os pedidos</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-icon">Run</span>
+            <div>
+              <div class="stat-valor" id="pedidosAndamento">--</div>
+              <div class="stat-label">Em andamento</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-icon">Ok</span>
+            <div>
+              <div class="stat-valor" id="pedidosEntregues">--</div>
+              <div class="stat-label">Entregues</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-icon">Off</span>
+            <div>
+              <div class="stat-valor" id="pedidosCancelados">--</div>
+              <div class="stat-label">Cancelados</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="listaPedidos" class="pedidos-lista">
+          <div class="vazio">Carregando pedidos...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>2026 Aura Outfit - Todos os direitos reservados.</footer>
+
+  <script src="perfil.js"></script>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,539 @@
+:root {
+    --lilas: #CD69C9;
+    --bg: #050505;
+    --text: #f4f4f4;
+    --muted: rgba(255,255,255,0.68);
+    --line: rgba(255,255,255,0.58);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.22) 48%, rgba(0,0,0,0.58) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.32) 100%),
+        url("../imagens/tela login.png") center top / cover no-repeat fixed;
+}
+
+.login-page {
+    min-height: 100svh;
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    min-height: 60px;
+    background: rgba(5,5,5,0.42);
+    backdrop-filter: blur(10px);
+    padding: 14px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 4px;
+    color: var(--lilas);
+    text-decoration: none;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+}
+
+nav ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+nav ul a:hover {
+    color: var(--text);
+}
+
+.container {
+    flex: 1;
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(38px, 7vw, 92px) 20px 76px;
+}
+
+.login-main {
+    width: 100%;
+    max-width: none;
+    min-height: calc(100svh - 121px);
+    margin: 0;
+    padding: clamp(20px, 4vh, 56px) clamp(16px, 4vw, 48px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.box {
+    width: min(100%, 470px);
+    flex: 0 1 470px;
+    margin: 0 auto;
+    padding: 28px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(8,8,12,0.78), rgba(10,10,14,0.42));
+    box-shadow: 0 28px 70px rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
+    animation: fadeUp 0.3s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.box-title {
+    display: block;
+    margin-bottom: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    color: #fff;
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    line-height: 1;
+    text-align: center;
+}
+
+.cadastro-fields {
+    display: none;
+}
+
+.cadastro-fields.aberto {
+    display: block;
+}
+
+.input-wrap {
+    width: 100%;
+    min-height: 56px;
+    margin-bottom: 14px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(3px);
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.input-wrap:focus-within {
+    border-color: rgba(205,105,201,0.88);
+    background: rgba(255,255,255,0.11);
+    box-shadow: 0 0 0 4px rgba(205,105,201,0.16);
+}
+
+input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+}
+
+.password-wrap {
+    gap: 12px;
+    padding-right: 12px;
+}
+
+.password-toggle {
+    width: 38px;
+    min-width: 38px;
+    min-height: 36px;
+    margin: 0;
+    padding: 0;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    color: #fff;
+    box-shadow: none;
+}
+
+.password-toggle:hover {
+    background: rgba(205,105,201,0.38);
+    transform: none;
+}
+
+.password-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    position: relative;
+}
+
+.password-icon-eye::before,
+.password-icon-eye-off::before {
+    content: "";
+    position: absolute;
+    inset: 4px 1px;
+    border: 1.8px solid currentColor;
+    border-radius: 50% / 65%;
+}
+
+.password-icon-eye::after {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    top: 6.5px;
+    left: 6.5px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.password-icon-eye-off::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 2px;
+    top: 8px;
+    left: -2px;
+    border-radius: 999px;
+    background: currentColor;
+    transform: rotate(-36deg);
+    box-shadow: 0 0 0 2px rgba(20,20,24,0.72);
+}
+
+input::placeholder {
+    color: rgba(255,255,255,0.84);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #fff;
+    caret-color: #fff;
+    box-shadow: 0 0 0 1000px rgba(255,255,255,0.08) inset;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+button {
+    width: 100%;
+    min-height: 56px;
+    margin-top: 6px;
+    background: linear-gradient(135deg, #cd69c9, #8b21e8);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 16px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 18px 42px rgba(139,33,232,0.28);
+    transition: transform 0.2s, background 0.2s;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #dd78d9, #9b31f2);
+    transform: translateY(-1px);
+}
+
+.oauth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0 14px;
+    color: rgba(255,255,255,0.66);
+    font-size: 13px;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: rgba(255,255,255,0.22);
+}
+
+.google-login {
+    width: 100%;
+    min-height: 54px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.94);
+    color: #111;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.google-login:hover {
+    background: #fff;
+    transform: translateY(-1px);
+}
+
+.google-mark {
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fff;
+    color: #4285f4;
+    font-weight: 800;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+}
+
+.erro {
+    color: #ff6b6b;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 16px;
+    display: none;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.7);
+}
+
+.sucesso {
+    color: #25f09b;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 16px;
+    display: none;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.7);
+}
+
+.forgot {
+    display: block;
+    width: fit-content;
+    margin: 24px auto 0;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.75);
+}
+
+.recuperacao {
+    display: none;
+    margin-top: 22px;
+}
+
+.recuperacao.aberto {
+    display: block;
+}
+
+.recuperacao input {
+    min-height: 64px;
+    padding: 0 24px;
+    border: 1px solid rgba(255,255,255,0.48);
+    border-radius: 14px;
+    background: rgba(0,0,0,0.28);
+    font-size: 17px;
+}
+
+.btn-secondary {
+    min-height: 58px;
+    margin-top: 12px;
+    border-radius: 14px;
+    background: rgba(205,105,201,0.92);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #080808;
+    font-size: 17px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.22);
+}
+
+.btn-secondary:hover {
+    background: #e174dc;
+}
+
+.link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--muted);
+    text-shadow: 0 2px 14px rgba(0,0,0,0.7);
+}
+
+.link a {
+    color: var(--lilas);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.status-box,
+.reset-box {
+    width: min(100%, 620px);
+    padding: 38px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 18px;
+    background: rgba(10,10,10,0.5);
+    backdrop-filter: blur(8px);
+}
+
+.status-box h1,
+.reset-box h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.status-box p {
+    color: rgba(255,255,255,0.75);
+    font-size: 17px;
+    margin-bottom: 24px;
+}
+
+.status-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 22px;
+    border-radius: 12px;
+    background: #fff;
+    color: #111;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.reset-box .input-wrap {
+    min-height: 68px;
+    padding: 0 24px;
+    margin-bottom: 14px;
+}
+
+.reset-box input {
+    font-size: 18px;
+}
+
+.reset-box button {
+    min-height: 64px;
+    font-size: 18px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: rgba(255,255,255,0.32);
+    font-size: 13px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    background: rgba(5,5,5,0.28);
+}
+
+@media (max-width: 900px) {
+    body {
+        background-position: 52% top;
+    }
+
+    .box {
+        width: min(100%, 470px);
+    }
+
+    .input-wrap {
+        min-height: 56px;
+        border-radius: 14px;
+        padding: 0 22px;
+    }
+
+    input {
+        font-size: 15px;
+    }
+
+    button {
+        min-height: 56px;
+        font-size: 15px;
+    }
+
+    .password-wrap {
+        padding-right: 12px;
+    }
+}
+
+@media (max-width: 560px) {
+    nav {
+        padding: 12px 18px;
+    }
+
+    nav ul {
+        gap: 14px;
+    }
+
+    .container {
+        align-items: center;
+        padding: 42px 18px 58px;
+    }
+
+    .login-main {
+        min-height: calc(100svh - 116px);
+        padding: 28px 18px 42px;
+    }
+
+    .input-wrap {
+        min-height: 54px;
+        margin-bottom: 14px;
+        padding: 0 18px;
+    }
+
+    .box {
+        padding: 22px;
+        border-radius: 16px;
+    }
+
+    .box-title {
+        font-size: 34px;
+        margin-bottom: 16px;
+    }
+
+    .password-wrap {
+        gap: 8px;
+        padding-right: 10px;
+    }
+
+    .password-toggle {
+        width: 36px;
+        min-width: 36px;
+    }
+
+    .forgot {
+        font-size: 16px;
+        margin-top: 22px;
+    }
+}

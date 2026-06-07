@@ -1,0 +1,810 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aura Outfit</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<nav>
+    <a href="/" class="logo">AURA OUTFIT</a>
+    <ul class="nav-menu" id="navLinks">
+        <li><a href="/" class="active">Inicio</a></li>
+        <li><a href="#produtos">Masculino</a></li>
+        <li><a href="#produtos">Feminino</a></li>
+        <li><a href="#categorias">Acessorios</a></li>
+        <li><a href="#categorias">Colecoes</a></li>
+        <li><a href="#produtos">Lancamentos</a></li>
+    </ul>
+    <div class="nav-actions" id="navActions">
+        <a href="#" class="profile-chip signup-chip" onclick="abrirModal(); return false;">Cadastrar</a>
+        <a href="/login" class="profile-chip signup-chip">Entrar</a>
+    </div>
+</nav>
+
+<section class="home-hero" id="homeHero">
+    <div class="hero-content">
+        <h1>Vista sua <span>identidade</span></h1>
+    </div>
+    <button class="hero-arrow hero-arrow-prev" type="button" aria-label="Banner anterior" onclick="trocarBannerHeroManual(bannerHeroAtual - 1)">
+        &lt;
+    </button>
+    <button class="hero-arrow hero-arrow-next" type="button" aria-label="Proximo banner" onclick="trocarBannerHeroManual(bannerHeroAtual + 1)">
+        &gt;
+    </button>
+    <div class="hero-dots" id="heroDots" aria-label="Banners em destaque">
+        <button class="ativo" type="button" aria-label="Banner 1" onclick="trocarBannerHeroManual(0)"></button>
+        <button type="button" aria-label="Banner 2" onclick="trocarBannerHeroManual(1)"></button>
+        <button type="button" aria-label="Banner 3" onclick="trocarBannerHeroManual(2)"></button>
+    </div>
+</section>
+
+<main class="home-shell">
+    <section class="search-panel">
+        <div class="welcome-text" id="welcomeText">Bem-vindo(a) a Aura Outfit</div>
+        <input
+            id="termoBusca"
+            name="aura_produto_filtro_2026"
+            type="search"
+            value=""
+            placeholder="O que voce esta procurando?"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            readonly
+            data-lpignore="true"
+            data-1p-ignore="true"
+            data-form-type="other"
+        />
+
+        <select id="filtroGenero">
+            <option value="">Todos os generos</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Unissex">Unissex</option>
+        </select>
+
+        <button onclick="buscarProdutos()">Buscar</button>
+        <button class="btn-ghost" onclick="listarProdutos()">Ver todos</button>
+    </section>
+
+    <section class="categorias" id="categorias">
+        <p class="section-title">Categorias</p>
+        <div class="categorias-grid">
+            <a href="#produtos" class="categoria-card moletom"><span>Hood</span><strong>Moletons</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card camiseta"><span>Shirt</span><strong>Camisetas</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card calca"><span>Pants</span><strong>Calcas</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card acessorio"><span>Cap</span><strong>Acessorios</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card lancamento"><span>New</span><strong>Lancamentos</strong><small>Ver colecao</small></a>
+        </div>
+    </section>
+
+    <section class="produtos-section" id="produtos">
+        <div class="section-head">
+            <p class="section-title">Produtos em destaque</p>
+            <button onclick="listarProdutos()">Ver todos</button>
+        </div>
+
+        <div class="produtos-grid" id="listaProdutos">
+            <p class="vazio">Carregando produtos...</p>
+        </div>
+    </section>
+
+    <section class="service-strip">
+        <div><strong>Troca facil</strong><span>Ate 7 dias apos o recebimento</span></div>
+        <div><strong>Parcele em ate 6x</strong><span>Sem juros no cartao</span></div>
+        <div><strong>10% off no pix</strong><span>Desconto exclusivo</span></div>
+        <div><strong>Atendimento humanizado</strong><span>Estamos aqui para ajudar</span></div>
+    </section>
+</main>
+
+<footer>2026 Aura Outfit - Todos os direitos reservados.</footer>
+
+<!-- MODAL CADASTRO -->
+<div class="overlay" id="overlay">
+    <div class="cadastro-modal">
+
+        <div class="modal-header">
+            <h2>Criar Conta</h2>
+            <button class="modal-close" type="button" aria-label="Fechar cadastro" onclick="fecharModal()">X</button>
+        </div>
+
+        <div class="msg msg-ok" id="msgOk">
+            Cadastro realizado!
+            <a href="/login">Faca login</a>
+        </div>
+
+        <div class="msg msg-err" id="msgErr"></div>
+
+        <input id="nome" placeholder="Nome completo" />
+        <input id="email" placeholder="E-mail" type="email" />
+        <input id="senha" placeholder="Senha (minimo 8 caracteres, com letra e numero)" type="password" />
+
+        <button class="modal-btn" type="button" onclick="cadastrar()">
+            Cadastrar
+        </button>
+
+        <div class="modal-link">
+            Ja tem conta?
+            <a href="/login">Entrar</a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const API = "http://localhost:8080";
+
+// â”€â”€â”€ Login check via sessÃ£o do servidor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let usuario = null;
+const bannersHero = [
+    "url('/imagens/bannerE.png')",
+    "url('/imagens/bannerE2.png')",
+    "url('/imagens/bannerE3.png')"
+];
+let bannerHeroAtual = 0;
+let timerHero = null;
+const intervaloHero = 4500;
+
+function trocarBannerHero(indice) {
+    const hero = document.getElementById("homeHero");
+    const dots = document.querySelectorAll("#heroDots button");
+
+    if (!hero || !dots.length) {
+        return;
+    }
+
+    bannerHeroAtual = (indice + bannersHero.length) % bannersHero.length;
+    hero.style.setProperty("--hero-image", bannersHero[bannerHeroAtual]);
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle("ativo", index === bannerHeroAtual);
+    });
+}
+
+function iniciarCarrosselHero() {
+    trocarBannerHero(0);
+    reiniciarTimerHero();
+}
+
+function reiniciarTimerHero() {
+    window.clearInterval(timerHero);
+    timerHero = window.setInterval(() => {
+        trocarBannerHero(bannerHeroAtual + 1);
+    }, intervaloHero);
+}
+
+function trocarBannerHeroManual(indice) {
+    trocarBannerHero(indice);
+    reiniciarTimerHero();
+}
+
+async function verificarSessao() {
+    try {
+        const res = await fetch(`${API}/api/usuarios/sessao`, {
+            credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (data.logado) {
+            usuario = data;
+
+            document.getElementById("navLinks").innerHTML = `
+                <li><a href="/" class="active">Inicio</a></li>
+                <li><a href="#produtos">Masculino</a></li>
+                <li><a href="#produtos">Feminino</a></li>
+                <li><a href="#categorias">Acessorios</a></li>
+                <li><a href="#categorias">Colecoes</a></li>
+                <li><a href="#produtos">Lancamentos</a></li>`;
+
+            const primeiroNome = (data.nome || "Perfil").trim().split(" ")[0];
+            const iniciais = (data.nome || data.email || "A")
+                .trim()
+                .split(" ")
+                .filter(Boolean)
+                .slice(0, 2)
+                .map(parte => parte[0])
+                .join("")
+                .toUpperCase();
+
+            document.getElementById("navActions").innerHTML = `
+                <div class="user-menu">
+                    <button type="button" class="user-trigger" onclick="toggleUserMenu(event)">
+                        <span class="user-avatar">${iniciais}</span>
+                        <span class="user-name">${primeiroNome}</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/perfil">Ver perfil</a>
+                        <a href="/meus-pedidos.html">Meus pedidos</a>
+                        <a href="/carrinho">Carrinho</a>
+                        <button type="button" onclick="sair()">Sair</button>
+                    </div>
+                </div>`;
+
+            const welcome = document.getElementById("welcomeText");
+            if (welcome) welcome.textContent = `Bem-vindo de volta, ${primeiroNome}`;
+
+            limparEmailDaBusca();
+        }
+    } catch {}
+}
+
+function limparEmailDaBusca() {
+    const termoBusca = document.getElementById("termoBusca");
+    if (!termoBusca) {
+        return;
+    }
+
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(termoBusca.value.trim())) {
+        termoBusca.value = "";
+    }
+}
+
+function protegerBuscaContraAutofill() {
+    const termoBusca = document.getElementById("termoBusca");
+    if (!termoBusca) {
+        return;
+    }
+
+    termoBusca.setAttribute("autocomplete", "off");
+    termoBusca.setAttribute("name", "aura_produto_filtro_2026");
+    limparEmailDaBusca();
+
+    setTimeout(() => {
+        limparEmailDaBusca();
+        termoBusca.removeAttribute("readonly");
+    }, 150);
+
+    let tentativas = 0;
+    const limpeza = setInterval(() => {
+        limparEmailDaBusca();
+        tentativas += 1;
+
+        if (tentativas >= 20) {
+            clearInterval(limpeza);
+        }
+    }, 250);
+}
+
+document.addEventListener("DOMContentLoaded", protegerBuscaContraAutofill);
+window.addEventListener("pageshow", protegerBuscaContraAutofill);
+
+document.addEventListener("focusin", (event) => {
+    if (event.target?.id === "termoBusca") {
+        limparEmailDaBusca();
+    }
+});
+
+document.addEventListener("input", (event) => {
+    if (event.target?.id === "termoBusca") {
+        limparEmailDaBusca();
+    }
+});
+
+setInterval(limparEmailDaBusca, 1000);
+
+function toggleUserMenu(event) {
+    event.stopPropagation();
+    document.getElementById("userDropdown")?.classList.toggle("aberto");
+}
+
+document.addEventListener("click", () => {
+    document.getElementById("userDropdown")?.classList.remove("aberto");
+});
+
+async function sair() {
+    await fetch(`${API}/api/usuarios/logout`, {
+        method: "POST",
+        credentials: "include"
+    });
+
+    window.location.href = "/";
+}
+
+verificarSessao();
+iniciarCarrosselHero();
+
+// â”€â”€â”€ Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function abrirModal() {
+    document.getElementById("overlay").classList.add("aberto");
+    window.clearInterval(timerHero);
+    setTimeout(() => document.getElementById("nome")?.focus(), 0);
+}
+
+function fecharModal() {
+    document.getElementById("overlay").classList.remove("aberto");
+    reiniciarTimerHero();
+
+    document.getElementById("msgOk").style.display = "none";
+    document.getElementById("msgErr").style.display = "none";
+}
+
+function fecharModalFora(e) {
+    e.stopPropagation();
+}
+
+// â”€â”€â”€ Cadastro â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function cadastrar() {
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+
+    const msgOk = document.getElementById("msgOk");
+    const msgErr = document.getElementById("msgErr");
+
+    msgOk.style.display = msgErr.style.display = "none";
+
+    if (!nome || !email || !senha) {
+        msgErr.textContent = "Preencha todos os campos!";
+        msgErr.style.display = "block";
+        return;
+    }
+
+    if (nome.length < 2) {
+        msgErr.textContent = "Nome muito curto (minimo 2 caracteres).";
+        msgErr.style.display = "block";
+        return;
+    }
+
+    if (senha.length < 8) {
+        msgErr.textContent = "A senha deve ter pelo menos 8 caracteres.";
+        msgErr.style.display = "block";
+        return;
+    }
+
+    if (!/[A-Za-z]/.test(senha) || !/\d/.test(senha)) {
+        msgErr.textContent = "A senha deve conter pelo menos uma letra e um numero.";
+        msgErr.style.display = "block";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/api/usuarios/cadastro`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nome, email, senha })
+        });
+
+        if (res.ok) {
+            msgOk.innerHTML = "Cadastro realizado! Bem-vindo(a) a Aura Outfit.";
+            msgOk.style.display = "block";
+
+            document.getElementById("nome").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("senha").value = "";
+
+            return;
+        }
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.status === 429) {
+            msgErr.textContent =
+                data.erro || "Muitas tentativas. Aguarde alguns minutos.";
+
+        } else if (res.status === 409) {
+            msgErr.textContent = "Email ja cadastrado!";
+
+        } else if (res.status === 400 && data.campos) {
+            msgErr.textContent =
+                Object.values(data.campos)[0] || "Dados invalidos";
+
+        } else {
+            msgErr.textContent =
+                data.erro || "Erro ao cadastrar.";
+        }
+
+        msgErr.style.display = "block";
+
+    } catch {
+        msgErr.textContent = "Erro de conexao. Tente novamente.";
+        msgErr.style.display = "block";
+    }
+}
+
+// â”€â”€â”€ Produtos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function listarProdutos() {
+    try {
+        const res = await fetch(`${API}/api/produtos`);
+
+        renderizarProdutos(await res.json());
+
+    } catch {
+        document.getElementById("listaProdutos").innerHTML =
+            '<p class="vazio">Erro ao carregar produtos.</p>';
+    }
+}
+
+async function buscarProdutos() {
+    const termo = document.getElementById("termoBusca").value.trim();
+    const genero = document.getElementById("filtroGenero").value;
+
+    try {
+        let url = `${API}/api/produtos`;
+
+        if (termo) {
+            url = `${API}/api/produtos/buscar?nome=${encodeURIComponent(termo)}`;
+        } else if (genero) {
+            url = `${API}/api/produtos/genero/${encodeURIComponent(genero)}`;
+        }
+
+        renderizarProdutos(await (await fetch(url)).json());
+
+    } catch {
+        document.getElementById("listaProdutos").innerHTML =
+            '<p class="vazio">Erro ao buscar.</p>';
+    }
+}
+
+const fotosProdutos = {};
+
+function renderizarProdutosAntigo(produtos) {
+    const grid = document.getElementById("listaProdutos");
+
+    if (!produtos.length) {
+        grid.innerHTML =
+            '<p class="vazio">Nenhum produto encontrado.</p>';
+        return;
+    }
+
+    grid.innerHTML = produtos.map(p => `
+        <div class="card" id="card-${p.id}">
+            <div class="card-img"
+                onclick="window.location.href='/produto?id=${p.id}'"
+                style="cursor:pointer">
+                ${p.imagemUrl
+                    ? `<img src="${p.imagemUrl}" alt="${p.nome}"
+                        onerror="this.parentElement.innerHTML='<span class=emoji>Produto</span>'" />`
+                    : `<span class="emoji">Produto</span>`}
+            </div>
+
+            <div class="card-body">
+                <p class="card-marca">
+                    ${p.marca || ""}
+                    ${p.genero ? "- " + p.genero : ""}
+                </p>
+
+                <h3 onclick="window.location.href='/produto?id=${p.id}'"
+                    style="cursor:pointer">
+                    ${p.nome}
+                </h3>
+
+                <p class="card-preco">
+                    ${(p.preco || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                </p>
+
+                <div class="tamanhos" id="tamanhos-${p.id}">
+                    <span class="tamanhos-loading">
+                        Carregando tamanhos...
+                    </span>
+                </div>
+
+                <button class="card-btn"
+                    id="btn-${p.id}"
+                    onclick="adicionarAoCarrinho(${p.id})"
+                    disabled>
+                    Selecione um tamanho
+                </button>
+            </div>
+        </div>
+    `).join("");
+
+    produtos.forEach(p => carregarTamanhos(p.id));
+}
+
+// â”€â”€â”€ Tamanhos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function carregarTamanhos(produtoId) {
+    try {
+        const res = await fetch(`${API}/api/estoque/${produtoId}`);
+        const estoques = await res.json();
+
+        const container = document.getElementById(`tamanhos-${produtoId}`);
+
+        if (!estoques.length) {
+            container.innerHTML =
+                '<span class="tamanhos-loading">Sem tamanhos cadastrados</span>';
+            return;
+        }
+
+        container.innerHTML = estoques.map(e => `
+            <button
+                class="tamanho-btn"
+                id="tam-${produtoId}-${e.tamanho}"
+                onclick="selecionarTamanho(${produtoId}, '${e.tamanho}', ${e.quantidade})"
+                ${e.quantidade === 0 ? "disabled title='Esgotado'" : ""}>
+                ${e.tamanho}
+            </button>
+        `).join("");
+
+    } catch {
+        document.getElementById(`tamanhos-${produtoId}`).innerHTML = "";
+    }
+}
+
+const tamanhosSelecionados = {};
+
+function selecionarTamanho(produtoId, tamanho, quantidade) {
+
+    document
+        .querySelectorAll(`[id^="tam-${produtoId}-"]`)
+        .forEach(b => b.classList.remove("selecionado"));
+
+    document
+        .getElementById(`tam-${produtoId}-${tamanho}`)
+        .classList.add("selecionado");
+
+    tamanhosSelecionados[produtoId] = tamanho;
+
+    const btn = document.getElementById(`btn-${produtoId}`);
+
+    btn.disabled = false;
+    btn.textContent =
+        quantidade > 0
+            ? (usuario ? "Adicionar ao Carrinho" : "Entrar para comprar")
+            : "Esgotado";
+
+    btn.disabled = quantidade === 0;
+}
+
+// â”€â”€â”€ Carrinho â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function adicionarAoCarrinho(produtoId) {
+
+    if (!usuario) {
+        abrirModal();
+        return;
+    }
+
+    const tamanho = tamanhosSelecionados[produtoId];
+
+    if (!tamanho) {
+        alert("Selecione um tamanho!");
+        return;
+    }
+
+    try {
+        await fetch(
+            `${API}/api/carrinho/${usuario.id}/produtos/${produtoId}?quantidade=1&tamanho=${encodeURIComponent(tamanho)}`,
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+        const btn = document.getElementById(`btn-${produtoId}`);
+
+        btn.textContent = "Adicionado!";
+        btn.style.background = "var(--green)";
+        btn.style.color = "#000";
+
+        setTimeout(() => {
+            btn.textContent = usuario ? "Adicionar ao Carrinho" : "Entrar para comprar";
+            btn.style.background = "";
+            btn.style.color = "";
+        }, 2000);
+
+    } catch {
+        alert("Erro ao adicionar produto.");
+    }
+}
+
+function normalizarProdutosCatalogo(produtos) {
+    const resultado = [];
+    const familias = new Map();
+
+    for (const produto of produtos) {
+        const familia = familiaProduto(produto);
+
+        if (familia) {
+            const atual = familias.get(familia.base);
+
+            if ((familia.base === "Corta Vento Aura" || familia.base === "Tenis Aura Runner") && produto.cor === "Roxo") {
+                familias.set(familia.base, {
+                    ...produto,
+                    nome: familia.base,
+                    corPrincipal: produto.cor,
+                    cor: "Variacoes de cor"
+                });
+                continue;
+            }
+
+            if (!atual || ordemCorProduto(produto.cor) < ordemCorProduto(atual.corPrincipal || atual.cor)) {
+                familias.set(familia.base, {
+                    ...produto,
+                    nome: familia.base,
+                    corPrincipal: produto.cor,
+                    cor: "Variacoes de cor"
+                });
+            }
+            continue;
+        }
+
+        resultado.push(produto);
+    }
+
+    familias.forEach(produto => resultado.push(produto));
+
+    return resultado;
+}
+
+function familiaProduto(produto) {
+    const nome = produto.nome?.toLowerCase() || "";
+
+    if (nome.startsWith("eclipse") || nome.startsWith("bone aura eclipse")) {
+        return { base: "Eclipse" };
+    }
+
+    if (nome.startsWith("corta vento aura")) {
+        return { base: "Corta Vento Aura" };
+    }
+
+    if (nome.startsWith("tenis aura runner")) {
+        return { base: "Tenis Aura Runner" };
+    }
+
+    return null;
+}
+
+function ordemCorProduto(cor) {
+    const ordem = {
+        "Roxo": 0,
+        "Vermelho/Branco": 1,
+        "Preto/Roxo": 2,
+        "Branco/Roxo": 3,
+        "Preto": 4,
+        "Branco": 5,
+        "Vermelho": 6
+    };
+    return Object.prototype.hasOwnProperty.call(ordem, cor) ? ordem[cor] : 99;
+}
+
+function renderizarProdutos(produtos) {
+    produtos = normalizarProdutosCatalogo(produtos);
+
+    const grid = document.getElementById("listaProdutos");
+
+    if (!produtos.length) {
+        grid.innerHTML =
+            '<p class="vazio">Nenhum produto encontrado.</p>';
+        return;
+    }
+
+    grid.innerHTML = produtos.map(p => `
+        <div class="card" id="card-${p.id}">
+            <div class="card-img"
+                onclick="window.location.href='/produto?id=${p.id}'"
+                style="cursor:pointer">
+                ${p.imagemUrl
+                    ? `<div class="foto-carousel" id="carousel-${p.id}" data-single="true">
+                            <img id="foto-${p.id}" class="produto-foto produto-foto-${p.id}" src="${p.imagemUrl}" alt="${p.nome}"
+                                onerror="this.parentElement.innerHTML='<span class=emoji>Produto</span>'" />
+                            <button class="foto-nav foto-prev" type="button" aria-label="Foto anterior"
+                                onclick="event.stopPropagation(); trocarFoto(${p.id}, -1)">&lt;</button>
+                            <button class="foto-nav foto-next" type="button" aria-label="Proxima foto"
+                                onclick="event.stopPropagation(); trocarFoto(${p.id}, 1)">&gt;</button>
+                            <div class="foto-dots" id="dots-${p.id}"></div>
+                        </div>`
+                    : `<span class="emoji">Produto</span>`}
+            </div>
+
+            <div class="card-body">
+                <p class="card-marca">
+                    ${p.marca || ""}
+                    ${p.genero ? "- " + p.genero : ""}
+                </p>
+
+                <h3 onclick="window.location.href='/produto?id=${p.id}'"
+                    style="cursor:pointer">
+                    ${p.nome}
+                </h3>
+
+                <p class="card-preco">
+                    ${(p.preco || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                </p>
+
+                <div class="tamanhos" id="tamanhos-${p.id}">
+                    <span class="tamanhos-loading">
+                        Carregando tamanhos...
+                    </span>
+                </div>
+
+                <button class="card-btn"
+                    id="btn-${p.id}"
+                    onclick="adicionarAoCarrinho(${p.id})"
+                    disabled>
+                    Selecione um tamanho
+                </button>
+            </div>
+        </div>
+    `).join("");
+
+    produtos.forEach(p => {
+        carregarTamanhos(p.id);
+        carregarFotosProduto(p);
+    });
+}
+
+async function carregarFotosProduto(produto) {
+    const fotosPadrao = produto.imagemUrl ? [produto.imagemUrl] : [];
+    try {
+        const res = await fetch(`${API}/api/produtos/${produto.id}/imagens`);
+        const imagens = await res.json();
+        const fotos = imagens
+            .map(imagem => imagem.url)
+            .filter(Boolean);
+
+        fotosProdutos[produto.id] = {
+            atual: 0,
+            fotos: fotos.length ? fotos : fotosPadrao
+        };
+    } catch {
+        fotosProdutos[produto.id] = {
+            atual: 0,
+            fotos: fotosPadrao
+        };
+    }
+
+    renderizarFotoProduto(produto.id);
+}
+
+function trocarFoto(produtoId, direcao) {
+    const carousel = fotosProdutos[produtoId];
+
+    if (!carousel || carousel.fotos.length < 2) {
+        return;
+    }
+
+    carousel.atual =
+        (carousel.atual + direcao + carousel.fotos.length) %
+        carousel.fotos.length;
+
+    renderizarFotoProduto(produtoId);
+}
+
+function renderizarFotoProduto(produtoId) {
+    const carousel = fotosProdutos[produtoId];
+    const img = document.getElementById(`foto-${produtoId}`);
+    const dots = document.getElementById(`dots-${produtoId}`);
+    const wrap = document.getElementById(`carousel-${produtoId}`);
+
+    if (!carousel || !img || !dots || !wrap || !carousel.fotos.length) {
+        return;
+    }
+
+    img.src = carousel.fotos[carousel.atual];
+    img.className = `produto-foto produto-foto-${produtoId} produto-foto-${produtoId}-${carousel.atual + 1}`;
+    wrap.dataset.single = carousel.fotos.length < 2 ? "true" : "false";
+
+    dots.innerHTML = carousel.fotos.map((_, index) => `
+        <button class="foto-dot ${index === carousel.atual ? "ativo" : ""}"
+            type="button"
+            aria-label="Ver foto ${index + 1}"
+            onclick="event.stopPropagation(); fotosProdutos[${produtoId}].atual=${index}; renderizarFotoProduto(${produtoId});">
+        </button>
+    `).join("");
+}
+
+listarProdutos();
+</script>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
+
+

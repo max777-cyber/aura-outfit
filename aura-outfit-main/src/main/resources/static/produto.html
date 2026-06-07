@@ -1,0 +1,736 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Produto - Aura Outfit</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/produto.css">
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<nav>
+    <a href="/" class="logo">AURA OUTFIT</a>
+
+    <ul id="navLinks">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/carrinho">Carrinho</a></li>
+        <li><a href="/login">Login</a></li>
+    </ul>
+</nav>
+
+<div class="page">
+
+    <!-- PRODUTO -->
+    <div class="produto-wrap">
+
+        <div class="produto-img" id="produtoImg">
+            <span class="emoji">Produto</span>
+        </div>
+
+        <div class="produto-info">
+
+            <p class="produto-marca" id="produtoMarca"></p>
+
+            <h1 class="produto-nome" id="produtoNome">
+                Carregando...
+            </h1>
+
+            <p class="produto-genero" id="produtoGenero"></p>
+
+            <div class="estrelas-media">
+                <span class="estrelas" id="estrelasMedia">
+                    &#9734;&#9734;&#9734;&#9734;&#9734;
+                </span>
+
+                <span class="media-num" id="mediaNum">
+                    (0 de 5)
+                </span>
+            </div>
+
+            <p class="produto-preco" id="produtoPreco">
+                R$ --
+            </p>
+
+            <div class="cores-box" id="coresBox" hidden>
+                <p class="tamanhos-label">
+                    Selecione a cor
+                </p>
+
+                <div class="cores-opcoes" id="coresOpcoes"></div>
+            </div>
+
+            <p class="tamanhos-label">
+                Selecione o tamanho
+            </p>
+
+            <div class="tamanhos" id="tamanhos"></div>
+
+            <button
+                class="btn-carrinho"
+                id="btnCarrinho"
+                onclick="adicionarAoCarrinho()"
+                disabled
+            >
+                Selecione um tamanho
+            </button>
+
+            <div class="msg msg-ok" id="msgOk"></div>
+            <div class="msg msg-err" id="msgErr"></div>
+
+        </div>
+    </div>
+
+    <!-- COMENTARIOS -->
+    <div class="comentarios-section">
+
+        <h2 class="section-titulo">
+            Avaliacoes
+        </h2>
+
+        <!-- FORM -->
+        <div class="form-comentario" id="formComentario">
+
+            <h3>Deixe sua avaliacao</h3>
+
+            <div class="nota-select" id="notaSelect">
+
+                <button class="estrela-btn" onclick="selecionarNota(1)">
+                    &#9733;
+                </button>
+
+                <button class="estrela-btn" onclick="selecionarNota(2)">
+                    &#9733;
+                </button>
+
+                <button class="estrela-btn" onclick="selecionarNota(3)">
+                    &#9733;
+                </button>
+
+                <button class="estrela-btn" onclick="selecionarNota(4)">
+                    &#9733;
+                </button>
+
+                <button class="estrela-btn" onclick="selecionarNota(5)">
+                    &#9733;
+                </button>
+
+            </div>
+
+            <textarea
+                id="textoComentario"
+                placeholder="Conta o que achou do produto..."
+            ></textarea>
+
+            <button
+                class="btn-comentar"
+                onclick="enviarComentario()"
+            >
+                Publicar avaliacao
+            </button>
+
+        </div>
+
+        <!-- LISTA -->
+        <div id="listaComentarios">
+            <p class="sem-comentarios">
+                Carregando avaliacoes...
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    2026 Aura Outfit - Todos os direitos reservados
+</footer>
+
+<script>
+const API = "http://localhost:8080";
+
+let usuario = null;
+let produtoId = null;
+let notaSelecionada = 0;
+let tamanhoSelecionado = null;
+let fotosProduto = [];
+let fotoAtual = 0;
+let produtoAtual = null;
+
+// Pega ID da URL
+const params = new URLSearchParams(window.location.search);
+produtoId = params.get("id");
+
+if (!produtoId) {
+    window.location.href = "/";
+}
+
+// Sessao
+async function verificarSessao() {
+
+    try {
+
+        const res = await fetch(
+            `${API}/api/usuarios/sessao`,
+            { credentials: "include" }
+        );
+
+        const data = await res.json();
+
+        if (data.logado) {
+
+            usuario = data;
+
+            document.getElementById("navLinks").innerHTML = `
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/carrinho">Carrinho</a></li>
+                <li><a href="/perfil.html">Perfil</a></li>
+                <li><a href="#" onclick="sair()">Sair</a></li>
+            `;
+
+        } else {
+
+            document.getElementById("formComentario").innerHTML =
+                '<p class="login-aviso">Faca <a href="/login">login</a> para deixar uma avaliacao.</p>';
+        }
+
+    } catch {}
+}
+
+async function sair() {
+
+    await fetch(
+        `${API}/api/usuarios/logout`,
+        {
+            method: "POST",
+            credentials: "include"
+        }
+    );
+
+    window.location.href = "/";
+}
+
+// Produto
+async function carregarProduto() {
+
+    try {
+
+        const res = await fetch(`${API}/api/produtos/${produtoId}`);
+        const p = await res.json();
+
+        document.title = `${p.nome} - Aura Outfit`;
+
+        document.getElementById("produtoMarca").textContent = p.marca || "";
+        document.getElementById("produtoNome").textContent = p.nome;
+        document.getElementById("produtoGenero").textContent = p.genero || "";
+
+        document.getElementById("produtoPreco").textContent =
+            (p.preco || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+        if (p.imagemUrl) {
+
+            document.getElementById("produtoImg").innerHTML =
+                `<img src="${p.imagemUrl}" alt="${p.nome}" onerror="this.parentElement.innerHTML='<span class=emoji>Produto</span>'" />`;
+        }
+
+        carregarTamanhos();
+        carregarMedia();
+
+    } catch {
+
+        document.getElementById("produtoNome").textContent =
+            "Produto nao encontrado";
+    }
+}
+
+// Tamanhos
+async function carregarTamanhos() {
+
+    try {
+
+        const res = await fetch(`${API}/api/estoque/${produtoId}`);
+        const estoques = await res.json();
+
+        const container =
+            document.getElementById("tamanhos");
+
+        container.innerHTML = estoques.map(e => `
+            <button
+                class="tamanho-btn"
+                id="tam-${e.tamanho}"
+                onclick="selecionarTamanho('${e.tamanho}', ${e.quantidade})"
+                ${e.quantidade === 0 ? "disabled title='Esgotado'" : ""}
+            >
+                ${e.tamanho}
+            </button>
+        `).join("");
+
+    } catch {}
+}
+
+function selecionarTamanho(tamanho, quantidade) {
+
+    document
+        .querySelectorAll(".tamanho-btn")
+        .forEach(b => b.classList.remove("selecionado"));
+
+    document
+        .getElementById(`tam-${tamanho}`)
+        .classList.add("selecionado");
+
+    tamanhoSelecionado = tamanho;
+
+    const btn = document.getElementById("btnCarrinho");
+
+    btn.disabled = quantidade === 0;
+
+    btn.textContent =
+        quantidade > 0
+            ? "Adicionar ao Carrinho"
+            : "Esgotado";
+}
+
+// Carrinho
+async function adicionarAoCarrinho() {
+
+    if (!usuario) {
+        window.location.href = "/login";
+        return;
+    }
+
+    if (!tamanhoSelecionado) {
+        mostrarErro("Selecione um tamanho!");
+        return;
+    }
+
+    try {
+
+        await fetch(
+            `${API}/api/carrinho/${usuario.id}/produtos/${produtoId}?quantidade=1&tamanho=${encodeURIComponent(tamanhoSelecionado)}`,
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+        const btn = document.getElementById("btnCarrinho");
+
+        btn.textContent = "Adicionado!";
+        btn.style.background = "var(--green-dark)";
+
+        setTimeout(() => {
+
+            btn.textContent = "Adicionar ao Carrinho";
+            btn.style.background = "";
+
+        }, 2000);
+
+    } catch {
+
+        mostrarErro("Erro ao adicionar ao carrinho.");
+    }
+}
+
+// Media
+async function carregarMedia() {
+
+    try {
+
+        const res = await fetch(
+            `${API}/api/comentarios/${produtoId}/media`
+        );
+
+        const data = await res.json();
+
+        const media = data.media || 0;
+
+        const cheias = Math.round(media);
+
+        document.getElementById("estrelasMedia").textContent =
+            "\u2605".repeat(cheias) +
+            "\u2606".repeat(5 - cheias);
+
+        document.getElementById("mediaNum").textContent =
+            `(${media.toFixed(1)} de 5)`;
+
+    } catch {}
+}
+
+// Comentarios
+async function carregarComentarios() {
+
+    try {
+
+        const res = await fetch(
+            `${API}/api/comentarios/${produtoId}`
+        );
+
+        const comentarios = await res.json();
+
+        const lista =
+            document.getElementById("listaComentarios");
+
+        if (!comentarios.length) {
+
+            lista.innerHTML =
+                '<p class="sem-comentarios">Nenhuma avaliacao ainda. Seja o primeiro!</p>';
+
+            return;
+        }
+
+        lista.innerHTML = comentarios.map(c => {
+
+            const estrelas =
+                "\u2605".repeat(c.nota) +
+                "\u2606".repeat(5 - c.nota);
+
+            const data =
+                new Date(c.dataCriacao)
+                .toLocaleDateString("pt-BR");
+
+            return `
+                <div class="comentario-item">
+
+                    <div class="comentario-header">
+
+                        <span class="comentario-usuario">
+                            ${c.usuario?.nome || "Usuario"}
+                        </span>
+
+                        <span class="comentario-data">
+                            ${data}
+                        </span>
+
+                    </div>
+
+                    <div class="comentario-estrelas">
+                        ${estrelas}
+                    </div>
+
+                    <p class="comentario-texto">
+                        ${c.texto}
+                    </p>
+
+                </div>
+            `;
+        }).join("");
+
+    } catch {
+
+        document.getElementById("listaComentarios").innerHTML =
+            '<p class="sem-comentarios">Erro ao carregar avaliacoes.</p>';
+    }
+}
+
+// Nota
+function selecionarNota(nota) {
+
+    notaSelecionada = nota;
+
+    document
+        .querySelectorAll(".estrela-btn")
+        .forEach((btn, i) => {
+
+            btn.classList.toggle("ativa", i < nota);
+        });
+}
+
+// Enviar comentario
+async function enviarComentario() {
+
+    if (!usuario) {
+        window.location.href = "/login";
+        return;
+    }
+
+    if (notaSelecionada === 0) {
+        alert("Selecione uma nota!");
+        return;
+    }
+
+    const texto =
+        document.getElementById("textoComentario")
+        .value.trim();
+
+    if (!texto) {
+        alert("Escreva um comentario!");
+        return;
+    }
+
+    try {
+
+        const res = await fetch(
+            `${API}/api/comentarios/${produtoId}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    texto,
+                    nota: notaSelecionada
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.erro || "Erro ao enviar avaliacao.");
+            return;
+        }
+
+        document.getElementById("textoComentario").value = "";
+
+        notaSelecionada = 0;
+
+        document
+            .querySelectorAll(".estrela-btn")
+            .forEach(b => b.classList.remove("ativa"));
+
+        carregarComentarios();
+        carregarMedia();
+
+    } catch {
+
+        alert("Erro ao enviar avaliacao.");
+    }
+}
+
+function mostrarErro(msg) {
+
+    const el = document.getElementById("msgErr");
+
+    el.textContent = msg;
+
+    el.style.display = "block";
+
+    setTimeout(() => {
+
+        el.style.display = "none";
+
+    }, 3000);
+}
+
+// Inicializacao
+async function carregarProduto() {
+
+    try {
+
+        const res = await fetch(`${API}/api/produtos/${produtoId}`);
+        const p = await res.json();
+
+        produtoAtual = p;
+
+        document.title = `${nomeProdutoVisivel(p)} - Aura Outfit`;
+
+        document.getElementById("produtoMarca").textContent = p.marca || "";
+        document.getElementById("produtoNome").textContent = nomeProdutoVisivel(p);
+        document.getElementById("produtoGenero").textContent = textoGeneroCor(p);
+
+        document.getElementById("produtoPreco").textContent =
+            (p.preco || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+        carregarVariacoesCor(p);
+        carregarFotosProduto(p);
+        carregarTamanhos();
+        carregarMedia();
+
+    } catch {
+
+        document.getElementById("produtoNome").textContent =
+            "Produto nao encontrado";
+    }
+}
+
+function familiaProduto(produto) {
+    const nome = produto?.nome?.toLowerCase() || "";
+
+    if (nome.startsWith("eclipse") || nome.startsWith("bone aura eclipse")) {
+        return { base: "Eclipse", busca: "Eclipse" };
+    }
+
+    if (nome.startsWith("corta vento aura")) {
+        return { base: "Corta Vento Aura", busca: "Corta Vento Aura" };
+    }
+
+    if (nome.startsWith("tenis aura runner")) {
+        return { base: "Tenis Aura Runner", busca: "Tenis Aura Runner" };
+    }
+
+    return null;
+}
+
+function ehProdutoComVariacao(produto) {
+    return Boolean(familiaProduto(produto));
+}
+
+function nomeProdutoVisivel(produto) {
+    return familiaProduto(produto)?.base || produto.nome;
+}
+
+function textoGeneroCor(produto) {
+    if (ehProdutoComVariacao(produto) && produto.cor) {
+        return `${produto.genero || "Unissex"} - ${produto.cor}`;
+    }
+
+    return produto.genero || "";
+}
+
+async function carregarVariacoesCor(produto) {
+    const box = document.getElementById("coresBox");
+    const container = document.getElementById("coresOpcoes");
+    const familia = familiaProduto(produto);
+
+    if (!familia) {
+        box.hidden = true;
+        container.innerHTML = "";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/api/produtos/buscar?nome=${encodeURIComponent(familia.busca)}`);
+        const variacoes = (await res.json())
+            .filter(item => familiaProduto(item)?.base === familia.base)
+            .sort((a, b) => ordemCor(a.cor) - ordemCor(b.cor));
+
+        box.hidden = variacoes.length < 2;
+        container.innerHTML = variacoes.map(variacao => `
+            <button
+                class="cor-btn ${Number(variacao.id) === Number(produtoId) ? "selecionado" : ""}"
+                type="button"
+                title="${variacao.cor}"
+                onclick="trocarVariacaoCor(${variacao.id})"
+            >
+                <span class="cor-amostra ${classeCor(variacao.cor)}"></span>
+                <span>${variacao.cor}</span>
+            </button>
+        `).join("");
+
+    } catch {
+        box.hidden = true;
+        container.innerHTML = "";
+    }
+}
+
+function ordemCor(cor) {
+    const ordem = {
+        "Roxo": 0,
+        "Vermelho/Branco": 1,
+        "Preto/Roxo": 2,
+        "Branco/Roxo": 3,
+        "Preto": 4,
+        "Branco": 5,
+        "Vermelho": 6
+    };
+    return Object.prototype.hasOwnProperty.call(ordem, cor) ? ordem[cor] : 99;
+}
+
+function classeCor(cor) {
+    return {
+        "Roxo": "cor-roxo",
+        "Vermelho/Branco": "cor-vermelho-branco",
+        "Preto/Roxo": "cor-preto-roxo",
+        "Branco/Roxo": "cor-branco-roxo",
+        "Preto": "cor-preto",
+        "Branco": "cor-branco",
+        "Vermelho": "cor-vermelho"
+    }[cor] || "";
+}
+
+function trocarVariacaoCor(id) {
+    if (Number(id) === Number(produtoId)) {
+        return;
+    }
+
+    window.location.href = `/produto?id=${id}`;
+}
+
+async function carregarFotosProduto(produto) {
+    fotosProduto = produto.imagemUrl ? [produto.imagemUrl] : [];
+    fotoAtual = 0;
+
+    try {
+        const res = await fetch(`${API}/api/produtos/${produtoId}/imagens`);
+        const imagens = await res.json();
+        const fotos = imagens
+            .map(imagem => imagem.url)
+            .filter(Boolean);
+
+        if (fotos.length) {
+            fotosProduto = fotos;
+        }
+    } catch {}
+
+    renderizarCarrosselProduto(produto.nome);
+}
+
+function renderizarCarrosselProduto(nomeProduto) {
+    const container = document.getElementById("produtoImg");
+
+    if (!fotosProduto.length) {
+        container.innerHTML = '<span class="emoji">Produto</span>';
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="produto-carousel" data-single="${fotosProduto.length < 2}">
+            <img id="fotoProdutoAtual" src="${fotosProduto[fotoAtual]}" alt="${nomeProduto}"
+                onerror="this.parentElement.innerHTML='<span class=emoji>Produto</span>'" />
+
+            <button class="produto-nav produto-prev" type="button" aria-label="Foto anterior"
+                onclick="trocarFotoProduto(-1)">
+                &lt;
+            </button>
+
+            <button class="produto-nav produto-next" type="button" aria-label="Proxima foto"
+                onclick="trocarFotoProduto(1)">
+                &gt;
+            </button>
+
+            <div class="produto-dots">
+                ${fotosProduto.map((_, index) => `
+                    <button class="produto-dot ${index === fotoAtual ? "ativo" : ""}"
+                        type="button"
+                        aria-label="Ver foto ${index + 1}"
+                        onclick="selecionarFotoProduto(${index})">
+                    </button>
+                `).join("")}
+            </div>
+        </div>
+    `;
+}
+
+function trocarFotoProduto(direcao) {
+    if (fotosProduto.length < 2) {
+        return;
+    }
+
+    fotoAtual =
+        (fotoAtual + direcao + fotosProduto.length) %
+        fotosProduto.length;
+
+    const nomeProduto = document.getElementById("produtoNome").textContent;
+    renderizarCarrosselProduto(nomeProduto);
+}
+
+function selecionarFotoProduto(index) {
+    fotoAtual = index;
+
+    const nomeProduto = document.getElementById("produtoNome").textContent;
+    renderizarCarrosselProduto(nomeProduto);
+}
+
+verificarSessao();
+carregarProduto();
+carregarComentarios();
+</script>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
+

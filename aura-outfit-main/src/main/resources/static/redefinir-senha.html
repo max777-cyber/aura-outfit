@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redefinir senha - Aura Outfit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<nav>
+    <a href="/" class="logo">AURA OUTFIT</a>
+    <ul>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/login">Login</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+    <section class="box reset-box">
+        <h1>Nova senha</h1>
+
+        <label class="input-wrap" for="senha">
+            <input type="password" id="senha" placeholder="Nova senha" autocomplete="new-password" />
+        </label>
+
+        <label class="input-wrap" for="confirmarSenha">
+            <input type="password" id="confirmarSenha" placeholder="Confirmar senha" autocomplete="new-password" />
+        </label>
+
+        <button onclick="redefinirSenha()">Salvar senha</button>
+
+        <p class="erro" id="erro"></p>
+        <p class="sucesso" id="sucesso"></p>
+    </section>
+</main>
+
+<footer>&copy; 2026 Aura Outfit - Todos os direitos reservados</footer>
+
+<script>
+const API = "http://localhost:8080";
+const token = new URLSearchParams(window.location.search).get("token");
+
+async function redefinirSenha() {
+    const senha = document.getElementById("senha").value;
+    const confirmarSenha = document.getElementById("confirmarSenha").value;
+    const erroEl = document.getElementById("erro");
+    const sucessoEl = document.getElementById("sucesso");
+
+    erroEl.style.display = "none";
+    sucessoEl.style.display = "none";
+
+    if (!token) {
+        erroEl.textContent = "Link invalido ou sem token.";
+        erroEl.style.display = "block";
+        return;
+    }
+    if (senha.length < 8) {
+        erroEl.textContent = "A senha deve ter pelo menos 8 caracteres.";
+        erroEl.style.display = "block";
+        return;
+    }
+    if (!/[A-Za-z]/.test(senha) || !/\d/.test(senha)) {
+        erroEl.textContent = "A senha deve conter pelo menos uma letra e um numero.";
+        erroEl.style.display = "block";
+        return;
+    }
+    if (senha !== confirmarSenha) {
+        erroEl.textContent = "As senhas nao conferem.";
+        erroEl.style.display = "block";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/api/usuarios/redefinir-senha`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ token, senha })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            erroEl.textContent = data.erro || "Nao foi possivel redefinir a senha.";
+            erroEl.style.display = "block";
+            return;
+        }
+
+        sucessoEl.textContent = "Senha redefinida. Voce ja pode entrar.";
+        sucessoEl.style.display = "block";
+
+        setTimeout(() => {
+            window.location.href = "/login";
+        }, 1400);
+    } catch {
+        erroEl.textContent = "Erro de conexao. Tente novamente.";
+        erroEl.style.display = "block";
+    }
+}
+</script>
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
+

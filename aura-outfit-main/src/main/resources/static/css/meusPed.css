@@ -1,0 +1,446 @@
+:root {
+    --lilas: #CD69C9;
+    --purple: purple;
+
+    --bg: #050505;
+    --surface: #101010;
+    --surface2: #181818;
+
+    --border: #232323;
+    --border2: #333;
+
+    --text: #f5f5f5;
+    --muted: #8a8a8a;
+
+    --yellow: #f0c040;
+    --red: #e74c3c;
+    --blue: #4da3ff;
+
+    /* Compatibilidade */
+    --green: #CD69C9;
+    --green-dark: purple;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+
+    font-family: 'DM Sans', sans-serif;
+
+    min-height: 100vh;
+}
+
+/* NAVBAR */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    background: rgba(5,5,5,0.92);
+    backdrop-filter: blur(10px);
+
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px 40px;
+}
+
+.logo {
+    text-decoration: none;
+
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+
+    color: var(--green);
+}
+
+nav ul {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+
+    list-style: none;
+}
+
+nav a {
+    color: var(--muted);
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: 0.2s;
+}
+
+nav a:hover,
+nav .active {
+    color: var(--text);
+}
+
+/* CONTAINER */
+
+.container {
+    max-width: 1150px;
+    margin: 50px auto;
+    padding: 0 24px;
+}
+
+/* HEADER */
+
+.page-header {
+    margin-bottom: 32px;
+}
+
+.page-header h1 {
+    font-size: 48px;
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+.page-header p {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+/* STATS */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    padding: 26px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: 700;
+
+    color: var(--green);
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* CARD */
+
+.pedidos-card {
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: 22px;
+
+    padding: 30px;
+}
+
+.pedidos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 28px;
+}
+
+.pedidos-header h2 {
+    font-size: 24px;
+}
+
+.pedidos-header select {
+    background: var(--surface2);
+
+    border: 1px solid var(--border);
+
+    color: var(--text);
+
+    height: 46px;
+
+    border-radius: 12px;
+
+    padding: 0 14px;
+
+    outline: none;
+}
+
+/* PEDIDO */
+
+.pedido-item {
+    background: #121212;
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    margin-bottom: 18px;
+}
+
+.pedido-item:last-child {
+    margin-bottom: 0;
+}
+
+.pedido-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 24px;
+}
+
+.pedido-top h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.pedido-top p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* STATUS */
+
+.status {
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.entregue {
+    background: rgba(0,230,118,0.12);
+    color: var(--green);
+
+    border: 1px solid rgba(0,230,118,0.3);
+}
+
+.transporte {
+    background: rgba(77,163,255,0.12);
+    color: var(--blue);
+
+    border: 1px solid rgba(77,163,255,0.3);
+}
+
+.cancelado {
+    background: rgba(231,76,60,0.12);
+    color: var(--red);
+
+    border: 1px solid rgba(231,76,60,0.3);
+}
+
+/* PRODUTOS */
+
+.pedido-produtos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 24px;
+}
+
+.produto {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.produto-img {
+    width: 72px;
+    height: 72px;
+
+    border-radius: 16px;
+
+    background: var(--surface2);
+
+    border: 1px solid var(--border);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 30px;
+}
+
+.produto-info h4 {
+    margin-bottom: 6px;
+    font-size: 16px;
+}
+
+.produto-info p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.produto-preco {
+    font-size: 18px;
+    font-weight: 700;
+
+    color: var(--green);
+}
+
+/* FOOTER PEDIDO */
+
+.pedido-footer {
+    border-top: 1px solid var(--border);
+
+    padding-top: 22px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pedido-total {
+    font-size: 15px;
+}
+
+.pedido-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-secundario,
+.btn-principal {
+    height: 46px;
+
+    border-radius: 12px;
+
+    padding: 0 20px;
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.btn-secundario {
+    background: transparent;
+
+    border: 1px solid var(--border2);
+
+    color: var(--text);
+}
+
+.btn-secundario:hover {
+    border-color: #666;
+}
+
+.btn-principal {
+    background: var(--green);
+
+    border: none;
+
+    color: #000;
+}
+
+.btn-principal:hover {
+    background: var(--green-dark);
+}
+
+/* FOOTER */
+
+footer {
+    border-top: 1px solid var(--border);
+
+    margin-top: 60px;
+
+    padding: 26px;
+
+    text-align: center;
+
+    color: #555;
+    font-size: 13px;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 900px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-footer {
+        flex-direction: column;
+        gap: 18px;
+
+        align-items: flex-start;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    nav {
+        padding: 16px;
+    }
+
+    nav ul {
+        gap: 16px;
+    }
+
+    .page-header h1 {
+        font-size: 38px;
+    }
+
+    .pedidos-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .pedido-top,
+    .pedido-produtos {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .pedido-buttons {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .btn-secundario,
+    .btn-principal {
+        width: 100%;
+    }
+
+}

@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos - Aura Outfit</title>
+
+    <link rel="stylesheet" href="css/meusPed.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <a href="#" class="logo">AURA OUTFIT</a>
+
+        <ul>
+            <li><a href="#">InÃ­cio</a></li>
+            <li><a href="#">Carrinho</a></li>
+            <li><a href="#" class="active">Perfil</a></li>
+            <li><a href="#">Sair</a></li>
+        </ul>
+    </nav>
+
+    <!-- CONTAINER -->
+    <main class="container">
+
+        <!-- HEADER -->
+        <div class="page-header">
+            <h1>Meus pedidos</h1>
+            <p>Acompanhe suas compras e o status das entregas.</p>
+        </div>
+
+        <!-- STATS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <span class="stat-number">12</span>
+                <span class="stat-label">Pedidos realizados</span>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-number">R$ 2.540</span>
+                <span class="stat-label">Total gasto</span>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-number">3</span>
+                <span class="stat-label">Em transporte</span>
+            </div>
+
+        </section>
+
+        <!-- PEDIDOS -->
+        <section class="pedidos-card">
+
+            <div class="pedidos-header">
+                <h2>HistÃ³rico de pedidos</h2>
+
+                <select>
+                    <option>Todos</option>
+                    <option>Entregues</option>
+                    <option>Em transporte</option>
+                    <option>Cancelados</option>
+                </select>
+            </div>
+
+            <!-- PEDIDO -->
+            <div class="pedido-item">
+
+                <div class="pedido-top">
+
+                    <div>
+                        <h3>Pedido #000128</h3>
+                        <p>Realizado em 20 Maio 2026</p>
+                    </div>
+
+                    <span class="status entregue">
+                        Entregue
+                    </span>
+
+                </div>
+
+                <div class="pedido-produtos">
+
+                    <div class="produto">
+                        <div class="produto-img">
+                            ðŸ‘•
+                        </div>
+
+                        <div class="produto-info">
+                            <h4>Camiseta Oversized</h4>
+                            <p>Tamanho G â€¢ Quantidade: 1</p>
+                        </div>
+                    </div>
+
+                    <span class="produto-preco">
+                        R$ 119,90
+                    </span>
+
+                </div>
+
+                <div class="pedido-footer">
+
+                    <span class="pedido-total">
+                        Total: <strong>R$ 119,90</strong>
+                    </span>
+
+                    <div class="pedido-buttons">
+                        <button class="btn-secundario">
+                            Ver detalhes
+                        </button>
+
+                        <button class="btn-principal">
+                            Comprar novamente
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PEDIDO -->
+            <div class="pedido-item">
+
+                <div class="pedido-top">
+
+                    <div>
+                        <h3>Pedido #000129</h3>
+                        <p>Realizado em 18 Maio 2026</p>
+                    </div>
+
+                    <span class="status transporte">
+                        Em transporte
+                    </span>
+
+                </div>
+
+                <div class="pedido-produtos">
+
+                    <div class="produto">
+                        <div class="produto-img">
+                            ðŸ‘Ÿ
+                        </div>
+
+                        <div class="produto-info">
+                            <h4>TÃªnis Streetwear</h4>
+                            <p>Tamanho 41 â€¢ Quantidade: 1</p>
+                        </div>
+                    </div>
+
+                    <span class="produto-preco">
+                        R$ 349,90
+                    </span>
+
+                </div>
+
+                <div class="pedido-footer">
+
+                    <span class="pedido-total">
+                        Total: <strong>R$ 349,90</strong>
+                    </span>
+
+                    <div class="pedido-buttons">
+                        <button class="btn-secundario">
+                            Rastrear pedido
+                        </button>
+
+                        <button class="btn-principal">
+                            Ver detalhes
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PEDIDO -->
+            <div class="pedido-item">
+
+                <div class="pedido-top">
+
+                    <div>
+                        <h3>Pedido #000130</h3>
+                        <p>Realizado em 15 Maio 2026</p>
+                    </div>
+
+                    <span class="status cancelado">
+                        Cancelado
+                    </span>
+
+                </div>
+
+                <div class="pedido-produtos">
+
+                    <div class="produto">
+                        <div class="produto-img">
+                            ðŸ§¥
+                        </div>
+
+                        <div class="produto-info">
+                            <h4>Jaqueta Cargo</h4>
+                            <p>Tamanho M â€¢ Quantidade: 1</p>
+                        </div>
+                    </div>
+
+                    <span class="produto-preco">
+                        R$ 229,90
+                    </span>
+
+                </div>
+
+                <div class="pedido-footer">
+
+                    <span class="pedido-total">
+                        Total: <strong>R$ 229,90</strong>
+                    </span>
+
+                    <div class="pedido-buttons">
+                        <button class="btn-secundario">
+                            Ver detalhes
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        Â© 2026 Aura Outfit â€” Todos os direitos reservados
+    </footer>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+

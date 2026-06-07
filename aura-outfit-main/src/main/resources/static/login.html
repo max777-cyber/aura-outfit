@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Login - Aura Outfit</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body class="login-page">
+
+<nav>
+    <a href="/" class="logo">AURA OUTFIT</a>
+</nav>
+
+<main class="container login-main">
+    <section class="box" aria-label="Login">
+        <h2 class="box-title" id="formTitle">Login</h2>
+
+        <div class="cadastro-fields" id="cadastroFields">
+            <label class="input-wrap" for="nomeCadastro">
+                <input type="text" id="nomeCadastro" placeholder="Nome completo" autocomplete="name" />
+            </label>
+        </div>
+
+        <label class="input-wrap" for="email">
+            <input type="email" id="email" placeholder="E-mail" autocomplete="email" />
+        </label>
+
+        <div class="input-wrap password-wrap">
+            <input type="password" id="senha" placeholder="Senha" autocomplete="current-password" aria-label="Senha" />
+            <button class="password-toggle" type="button" id="toggleSenha" onclick="alternarVisibilidadeSenha()" aria-label="Mostrar senha">
+                <span class="password-icon password-icon-eye" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <button id="btnSubmit" onclick="enviarFormulario()">Entrar</button>
+
+        <div class="oauth-divider"><span>ou</span></div>
+        <a class="google-login" href="/oauth2/authorization/google" aria-label="Entrar com Google">
+            <span class="google-mark" aria-hidden="true">G</span>
+            Entrar com Google
+        </a>
+
+        <p class="erro" id="erro"></p>
+        <p class="sucesso" id="sucesso"></p>
+
+        <a class="forgot" href="#" onclick="abrirRecuperacao(event)">Esqueci minha senha</a>
+
+        <div class="recuperacao" id="recuperacaoBox">
+            <input type="email" id="emailRecuperacao" placeholder="Digite seu e-mail" autocomplete="email" />
+            <button class="btn-secondary" onclick="solicitarRecuperacao()">Enviar link</button>
+        </div>
+
+        <div class="link">
+            <span id="toggleText">Nao tem conta?</span>
+            <a href="#" id="toggleCadastro" onclick="alternarCadastro(event)">Cadastre-se</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    &copy; 2026 Aura Outfit - Todos os direitos reservados
+</footer>
+
+<script>
+const API = "http://localhost:8080";
+const params = new URLSearchParams(window.location.search);
+if (params.get("oauth2") === "erro") {
+    window.addEventListener("DOMContentLoaded", () => {
+        const erroEl = document.getElementById("erro");
+        erroEl.textContent = "Nao foi possivel entrar com Google. Tente novamente.";
+        erroEl.style.display = "block";
+    });
+}
+let modoCadastro = false;
+
+function limparMensagens() {
+    document.getElementById("erro").style.display = "none";
+    document.getElementById("sucesso").style.display = "none";
+}
+
+function alternarCadastro(event) {
+    event.preventDefault();
+    modoCadastro = !modoCadastro;
+    limparMensagens();
+    document.getElementById("recuperacaoBox").classList.remove("aberto");
+    document.getElementById("cadastroFields").classList.toggle("aberto", modoCadastro);
+    document.getElementById("btnSubmit").textContent = modoCadastro ? "Cadastrar" : "Entrar";
+    document.getElementById("toggleText").textContent = modoCadastro ? "Ja tem conta?" : "Nao tem conta?";
+    document.getElementById("toggleCadastro").textContent = modoCadastro ? "Entrar" : "Cadastre-se";
+    document.getElementById("email").autocomplete = modoCadastro ? "email" : "email";
+    document.getElementById("senha").autocomplete = modoCadastro ? "new-password" : "current-password";
+    document.getElementById(modoCadastro ? "nomeCadastro" : "email").focus();
+}
+
+function enviarFormulario() {
+    if (modoCadastro) {
+        cadastrar();
+        return;
+    }
+    logar();
+}
+
+function alternarVisibilidadeSenha() {
+    const senhaInput = document.getElementById("senha");
+    const toggle = document.getElementById("toggleSenha");
+    const mostrar = senhaInput.type === "password";
+
+    senhaInput.type = mostrar ? "text" : "password";
+    toggle.innerHTML = `<span class="password-icon ${mostrar ? "password-icon-eye-off" : "password-icon-eye"}" aria-hidden="true"></span>`;
+    toggle.setAttribute("aria-label", mostrar ? "Ocultar senha" : "Mostrar senha");
+}
+
+async function logar() {
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value.trim();
+    const erroEl = document.getElementById("erro");
+    const sucessoEl = document.getElementById("sucesso");
+
+    erroEl.style.display = "none";
+    sucessoEl.style.display = "none";
+
+    if (!email || !senha) {
+        erroEl.textContent = "Preencha email e senha!";
+        erroEl.style.display = "block";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/api/usuarios/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                email,
+                senha
+            })
+        });
+
+        if (res.ok) {
+            window.location.href = "/";
+            return;
+        }
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.status === 429) {
+            erroEl.textContent =
+                data.erro || "Muitas tentativas. Aguarde alguns minutos.";
+        } else if (res.status === 400 && data.campos) {
+            erroEl.textContent =
+                Object.values(data.campos)[0] || "Dados invalidos";
+        } else if (res.status === 401) {
+            erroEl.textContent = "Email ou senha invalidos!";
+        } else {
+            erroEl.textContent =
+                data.erro || "Erro ao fazer login.";
+        }
+
+        erroEl.style.display = "block";
+    } catch {
+        erroEl.textContent = "Erro de conexao. Tente novamente.";
+        erroEl.style.display = "block";
+    }
+}
+
+async function cadastrar() {
+    const nome = document.getElementById("nomeCadastro").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+    const erroEl = document.getElementById("erro");
+    const sucessoEl = document.getElementById("sucesso");
+
+    erroEl.style.display = "none";
+    sucessoEl.style.display = "none";
+
+    if (!nome || !email || !senha) {
+        erroEl.textContent = "Preencha todos os campos para criar sua conta.";
+        erroEl.style.display = "block";
+        return;
+    }
+
+    if (nome.length < 2) {
+        erroEl.textContent = "Nome muito curto. Use pelo menos 2 caracteres.";
+        erroEl.style.display = "block";
+        return;
+    }
+
+    if (senha.length < 8) {
+        erroEl.textContent = "A senha deve ter pelo menos 8 caracteres.";
+        erroEl.style.display = "block";
+        return;
+    }
+
+    if (!/[A-Za-z]/.test(senha) || !/\d/.test(senha)) {
+        erroEl.textContent = "A senha deve conter pelo menos uma letra e um numero.";
+        erroEl.style.display = "block";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/api/usuarios/cadastro`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nome, email, senha })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok) {
+            document.getElementById("nomeCadastro").value = "";
+            modoCadastro = false;
+            document.getElementById("cadastroFields").classList.remove("aberto");
+            document.getElementById("btnSubmit").textContent = "Entrar";
+            document.getElementById("toggleText").textContent = "Nao tem conta?";
+            document.getElementById("toggleCadastro").textContent = "Cadastre-se";
+            document.getElementById("senha").autocomplete = "current-password";
+            sucessoEl.textContent = data.mensagem || "Cadastro realizado. Agora voce ja pode entrar.";
+            sucessoEl.style.display = "block";
+            return;
+        }
+
+        if (res.status === 429) {
+            erroEl.textContent = data.erro || "Muitas tentativas. Aguarde alguns minutos.";
+        } else if (res.status === 409) {
+            erroEl.textContent = "Email ja cadastrado.";
+        } else if (res.status === 400 && data.campos) {
+            erroEl.textContent = Object.values(data.campos)[0] || "Dados invalidos.";
+        } else {
+            erroEl.textContent = data.erro || "Erro ao cadastrar.";
+        }
+
+        erroEl.style.display = "block";
+    } catch {
+        erroEl.textContent = "Erro de conexao. Tente novamente.";
+        erroEl.style.display = "block";
+    }
+}
+
+function abrirRecuperacao(event) {
+    event.preventDefault();
+    const box = document.getElementById("recuperacaoBox");
+    const email = document.getElementById("email").value.trim();
+    box.classList.toggle("aberto");
+    if (email) {
+        document.getElementById("emailRecuperacao").value = email;
+    }
+}
+
+async function solicitarRecuperacao() {
+    const email = document.getElementById("emailRecuperacao").value.trim();
+    const erroEl = document.getElementById("erro");
+    const sucessoEl = document.getElementById("sucesso");
+
+    erroEl.style.display = "none";
+    sucessoEl.style.display = "none";
+
+    if (!email) {
+        erroEl.textContent = "Digite seu e-mail para recuperar a senha.";
+        erroEl.style.display = "block";
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/api/usuarios/recuperar-senha`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            erroEl.textContent = data.erro || "Erro ao pedir recuperacao.";
+            erroEl.style.display = "block";
+            return;
+        }
+
+        sucessoEl.textContent = data.mensagem || "Se esse e-mail existir, enviaremos um link.";
+        sucessoEl.style.display = "block";
+    } catch {
+        erroEl.textContent = "Erro de conexao. Tente novamente.";
+        erroEl.style.display = "block";
+    }
+}
+
+document.getElementById("email")
+    .addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+            enviarFormulario();
+        }
+    });
+
+document.getElementById("senha")
+    .addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+            enviarFormulario();
+        }
+    });
+
+document.getElementById("nomeCadastro")
+    .addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+            enviarFormulario();
+        }
+    });
+</script>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
+

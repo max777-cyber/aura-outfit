@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EndereÃ§o - Aura Outfit</title>
+
+    <link rel="stylesheet" href="css/endereco.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <a href="#" class="logo">AURA OUTFIT</a>
+
+        <ul>
+            <li><a href="#">InÃ­cio</a></li>
+            <li><a href="#">Carrinho</a></li>
+            <li><a href="#" class="active">Perfil</a></li>
+            <li><a href="#">Sair</a></li>
+        </ul>
+    </nav>
+
+    <!-- CONTAINER -->
+    <main class="container">
+
+        <!-- HEADER -->
+        <div class="page-header">
+            <h1>EndereÃ§o de entrega</h1>
+            <p>Gerencie o endereÃ§o utilizado para entregas dos seus pedidos.</p>
+        </div>
+
+        <!-- ALERTA -->
+        <div class="alerta">
+            <div class="alerta-icon">!</div>
+
+            <span>
+                Mantenha seu endereÃ§o atualizado para evitar problemas na entrega.
+            </span>
+        </div>
+
+        <!-- CARD -->
+        <section class="card">
+
+            <div class="card-header">
+                <h2>InformaÃ§Ãµes de endereÃ§o</h2>
+                <p>Preencha corretamente os dados abaixo.</p>
+            </div>
+
+            <!-- FORM -->
+            <form>
+
+                <!-- LINHA CEP -->
+                <div class="grid-cep">
+
+                    <div class="input-group">
+                        <label>CEP</label>
+
+                        <div class="cep-wrap">
+                            <input
+                                type="text"
+                                placeholder="00000-000"
+                                maxlength="9"
+                                id="cep"
+                            >
+
+                            <button type="button" class="btn-buscar">
+                                Buscar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Rua / Avenida</label>
+
+                        <input
+                            type="text"
+                            placeholder="Digite o logradouro"
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label>NÃºmero</label>
+
+                        <input
+                            type="text"
+                            placeholder="NÂº"
+                        >
+                    </div>
+
+                </div>
+
+                <!-- LINHA 2 -->
+                <div class="grid-2">
+
+                    <div class="input-group">
+                        <label>Bairro</label>
+
+                        <input
+                            type="text"
+                            placeholder="Seu bairro"
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label>Complemento</label>
+
+                        <input
+                            type="text"
+                            placeholder="Apartamento, bloco, etc"
+                        >
+                    </div>
+
+                </div>
+
+                <!-- LINHA 3 -->
+                <div class="grid-2">
+
+                    <div class="input-group">
+                        <label>Cidade</label>
+
+                        <input
+                            type="text"
+                            placeholder="Sua cidade"
+                        >
+                    </div>
+
+                    <div class="input-group">
+                        <label>Estado</label>
+
+                        <select>
+                            <option>UF</option>
+                            <option>SP</option>
+                            <option>RJ</option>
+                            <option>MG</option>
+                            <option>PR</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- CHECKBOX -->
+                <div class="checkbox-wrap">
+                    <input type="checkbox" id="principal">
+
+                    <label for="principal">
+                        Definir como endereÃ§o principal
+                    </label>
+                </div>
+
+                <!-- BOTÃ•ES -->
+                <div class="btn-row">
+                    <button type="button" class="btn-cancelar">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn-salvar">
+                        Salvar endereÃ§o
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+        Â© 2026 Aura Outfit â€” Todos os direitos reservados
+    </footer>
+
+    <script>
+        // MÃ¡scara CEP
+        const cepInput = document.getElementById("cep");
+
+        cepInput.addEventListener("input", () => {
+            let v = cepInput.value.replace(/\D/g, "");
+
+            if (v.length > 5) {
+                v = v.slice(0, 5) + "-" + v.slice(5, 8);
+            }
+
+            cepInput.value = v;
+        });
+    </script>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
