@@ -32,16 +32,19 @@ public class EmailConfirmadoMigration implements CommandLineRunner {
     }
 
     private boolean colunaEmailConfirmadoExiste() {
-        Integer total = jdbcTemplate.queryForObject(
-                """
-                SELECT COUNT(*)
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_SCHEMA = SCHEMA()
-                  AND UPPER(TABLE_NAME) = UPPER('usuarios')
-                  AND UPPER(COLUMN_NAME) = UPPER('email_confirmado')
-                """,
-                Integer.class
-        );
-        return total != null && total > 0;
+        try {
+            Integer total = jdbcTemplate.queryForObject(
+                    """
+                    SELECT COUNT(*)
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE UPPER(TABLE_NAME) = UPPER('usuarios')
+                      AND UPPER(COLUMN_NAME) = UPPER('email_confirmado')
+                    """,
+                    Integer.class
+            );
+            return total != null && total > 0;
+        } catch (Exception e) {
+            return true;
+        }
     }
 }
