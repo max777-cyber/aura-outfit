@@ -153,9 +153,13 @@ public class PagamentoController {
 
             log.info("Preferência MP criada: pedidoId={} preferenceId={}", pedido.getId(), preference.getId());
 
-            String checkoutUrl = preference.getInitPoint();
+            // Token TEST- usa sandbox; APP_USR- usa produção
+            boolean isSandbox = accessToken.startsWith("TEST-");
+            String checkoutUrl = isSandbox
+                    ? preference.getSandboxInitPoint()
+                    : preference.getInitPoint();
             if (checkoutUrl == null || checkoutUrl.isBlank()) {
-                checkoutUrl = preference.getSandboxInitPoint();
+                checkoutUrl = isSandbox ? preference.getInitPoint() : preference.getSandboxInitPoint();
             }
 
             if (checkoutUrl == null || checkoutUrl.isBlank()) {
