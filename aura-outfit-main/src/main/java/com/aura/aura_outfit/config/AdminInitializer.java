@@ -30,7 +30,7 @@ public class AdminInitializer implements CommandLineRunner {
     @Value("${app.admin.email:adm@aura.local}")
     private String adminEmail;
 
-    @Value("${app.admin.senha:130398}")
+    @Value("${app.admin.senha:Aura@2024!Mude}")
     private String adminSenha;
 
     @Value("${app.admin.nome:Administrador}")
@@ -64,7 +64,9 @@ public class AdminInitializer implements CommandLineRunner {
                         || senhaAtual.isBlank()
                         || senhaAtual.contains("placeholder")
                         || senhaAtual.startsWith("$2a$12$placeholder");
-                boolean senhaPadraoAntiga = senhaAtual != null && passwordEncoder.matches("130398", senhaAtual);
+                boolean senhaPadraoAntiga = senhaAtual != null
+                        && (passwordEncoder.matches("130398", senhaAtual)
+                            || passwordEncoder.matches("Aura@2024!Mude", senhaAtual));
 
                 if (senhaPlaceholder || senhaPadraoAntiga) {
                     existente.setSenha(passwordEncoder.encode(adminSenha));
@@ -79,17 +81,21 @@ public class AdminInitializer implements CommandLineRunner {
                 log.info("Admin carregado: {} (role={})", existente.getEmail(), existente.getRole());
             },
             () -> {
-                Usuario admin = new Usuario();
-                admin.setNome(adminNome);
-                admin.setEmail(adminEmail);
-                admin.setSenha(passwordEncoder.encode(adminSenha));
-                admin.setRole("ADMIN");
-                admin.setEmailConfirmado(true);
-                usuarioRepository.save(admin);
-                log.warn("═══════════════════════════════════════════════════════════");
-                log.warn("🔐 ADMIN criado: email={}", adminEmail);
-                log.warn("   Senha padrão configurada. TROQUE EM PRODUÇÃO!");
-                log.warn("═══════════════════════════════════════════════════════════");
+                try {
+                    Usuario admin = new Usuario();
+                    admin.setNome(adminNome);
+                    admin.setEmail(adminEmail);
+                    admin.setSenha(passwordEncoder.encode(adminSenha));
+                    admin.setRole("ADMIN");
+                    admin.setEmailConfirmado(true);
+                    usuarioRepository.save(admin);
+                    log.warn("═══════════════════════════════════════════════════════════");
+                    log.warn("ADMIN criado: email={}", adminEmail);
+                    log.warn("Configure APP_ADMIN_SENHA via variavel de ambiente em producao!");
+                    log.warn("═══════════════════════════════════════════════════════════");
+                } catch (Exception e) {
+                    log.error("Falha ao criar usuario admin: {}", e.getMessage());
+                }
             }
         );
     }

@@ -50,9 +50,11 @@ public class ComentarioController {
             return ResponseEntity.badRequest().body(Map.of("erro", "Nota deve ser entre 1 e 5"));
         }
 
-        // ✅ Sanitização básica: remove tags HTML pra prevenir XSS armazenado.
-        //    O frontend também DEVE escapar antes de renderizar.
         String textoLimpo = texto.replaceAll("<[^>]*>", "").trim();
+
+        if (textoLimpo.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("erro", "Comentario nao pode ser vazio"));
+        }
 
         Comentario comentario = comentarioService.adicionar(produtoId, usuarioId, textoLimpo, nota);
         return ResponseEntity.status(201).body(comentario);

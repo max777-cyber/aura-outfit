@@ -82,29 +82,55 @@ function renderizarCarrinho(carrinho) {
 
     document.getElementById("btnFinalizar").disabled = false;
 
-    itensEl.innerHTML = itens.map(item => {
+    itensEl.replaceChildren();
+    itens.forEach(item => {
         const produto = item.produto || {};
-        const imagem = produto.imagemUrl
-            ? `<img src="${produto.imagemUrl}" alt="${produto.nome}" onerror="this.style.display='none'">`
-            : "";
+        const tamanho = item.tamanho || "";
+        const produtoId = produto.id;
 
-        return `
-            <div class="item">
-                <div class="item-img">${imagem}</div>
-                <div class="item-info">
-                    <h3>${produto.nome || "Produto"}</h3>
-                    <p>${produto.marca || ""}${item.tamanho ? " · Tam. " + item.tamanho : ""}</p>
-                    <strong>${moeda(produto.preco)}</strong>
-                </div>
-                <div class="item-qtd">
-                    <button onclick="alterarQuantidade(${produto.id}, ${item.quantidade - 1}, '${item.tamanho || ""}')">-</button>
-                    <span>${item.quantidade}</span>
-                    <button onclick="alterarQuantidade(${produto.id}, ${item.quantidade + 1}, '${item.tamanho || ""}')">+</button>
-                </div>
-                <button class="btn-remover" onclick="removerItem(${produto.id}, '${item.tamanho || ""}')">Remover</button>
-            </div>
-        `;
-    }).join("");
+        const div = document.createElement("div");
+        div.className = "item";
+
+        const imgDiv = document.createElement("div");
+        imgDiv.className = "item-img";
+        if (produto.imagemUrl) {
+            const img = document.createElement("img");
+            img.src = produto.imagemUrl;
+            img.alt = produto.nome || "Produto";
+            img.onerror = () => img.style.display = "none";
+            imgDiv.appendChild(img);
+        }
+
+        const infoDiv = document.createElement("div");
+        infoDiv.className = "item-info";
+        const h3 = document.createElement("h3");
+        h3.textContent = produto.nome || "Produto";
+        const p = document.createElement("p");
+        p.textContent = (produto.marca || "") + (tamanho ? " · Tam. " + tamanho : "");
+        const strong = document.createElement("strong");
+        strong.textContent = moeda(produto.preco);
+        infoDiv.append(h3, p, strong);
+
+        const qtdDiv = document.createElement("div");
+        qtdDiv.className = "item-qtd";
+        const btnMenos = document.createElement("button");
+        btnMenos.textContent = "-";
+        btnMenos.addEventListener("click", () => alterarQuantidade(produtoId, item.quantidade - 1, tamanho));
+        const spanQtd = document.createElement("span");
+        spanQtd.textContent = item.quantidade;
+        const btnMais = document.createElement("button");
+        btnMais.textContent = "+";
+        btnMais.addEventListener("click", () => alterarQuantidade(produtoId, item.quantidade + 1, tamanho));
+        qtdDiv.append(btnMenos, spanQtd, btnMais);
+
+        const btnRemover = document.createElement("button");
+        btnRemover.className = "btn-remover";
+        btnRemover.textContent = "Remover";
+        btnRemover.addEventListener("click", () => removerItem(produtoId, tamanho));
+
+        div.append(imgDiv, infoDiv, qtdDiv, btnRemover);
+        itensEl.appendChild(div);
+    });
 
     atualizarResumo();
 }

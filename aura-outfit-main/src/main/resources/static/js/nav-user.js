@@ -13,11 +13,18 @@ const API = window.location.hostname === "localhost" || window.location.hostname
     return base.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join("").toUpperCase() || "A";
   }
 
-  function avatarMarkup(user) {
-    if (user.fotoPerfil) {
-      return `<span class="aura-user-avatar"><img src="${user.fotoPerfil}" alt=""></span>`;
+  function buildAvatar(user) {
+    const span = document.createElement("span");
+    span.className = "aura-user-avatar";
+    if (user.fotoPerfil && user.fotoPerfil.startsWith("data:image/")) {
+      const img = document.createElement("img");
+      img.src = user.fotoPerfil;
+      img.alt = "";
+      span.appendChild(img);
+    } else {
+      span.textContent = initials(user);
     }
-    return `<span class="aura-user-avatar">${initials(user)}</span>`;
+    return span;
   }
 
   function removeLegacyLinks(nav) {
@@ -58,20 +65,39 @@ const API = window.location.hostname === "localhost" || window.location.hostname
     actions.id = actions.id || "navActions";
     actions.className = "aura-nav-actions";
 
-    actions.innerHTML = `
-      <div class="aura-user-menu">
-        <button type="button" class="aura-user-trigger" data-aura-user-trigger>
-          ${avatarMarkup(user)}
-          <span class="aura-user-name">${firstName(user.nome)}</span>
-        </button>
-        <div class="aura-user-dropdown" id="auraUserDropdown">
-          <a href="/perfil">Ver perfil</a>
-          <a href="/meus-pedidos.html">Meus pedidos</a>
-          <a href="/carrinho">Carrinho</a>
-          <button type="button" data-aura-logout>Sair</button>
-        </div>
-      </div>
-    `;
+    const menu = document.createElement("div");
+    menu.className = "aura-user-menu";
+
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "aura-user-trigger";
+    trigger.dataset.auraUserTrigger = "";
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "aura-user-name";
+    nameSpan.textContent = firstName(user.nome);
+    trigger.append(buildAvatar(user), nameSpan);
+
+    const dropdown = document.createElement("div");
+    dropdown.className = "aura-user-dropdown";
+    dropdown.id = "auraUserDropdown";
+    [
+      { href: "/perfil", text: "Ver perfil" },
+      { href: "/meus-pedidos.html", text: "Meus pedidos" },
+      { href: "/carrinho", text: "Carrinho" },
+    ].forEach(({ href, text }) => {
+      const a = document.createElement("a");
+      a.href = href;
+      a.textContent = text;
+      dropdown.appendChild(a);
+    });
+    const sairBtn = document.createElement("button");
+    sairBtn.type = "button";
+    sairBtn.dataset.auraLogout = "";
+    sairBtn.textContent = "Sair";
+    dropdown.appendChild(sairBtn);
+
+    menu.append(trigger, dropdown);
+    actions.replaceChildren(menu);
 
     actions.querySelector("[data-aura-user-trigger]")?.addEventListener("click", event => {
       event.stopPropagation();

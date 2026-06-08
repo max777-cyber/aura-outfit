@@ -62,8 +62,7 @@ public class EmailService {
         JavaMailSender mailSender = mailSenderProvider.getIfAvailable();
 
         if (mailSender == null || mailHost == null || mailHost.isBlank()) {
-            log.warn("Email nao enviado porque o SMTP nao esta configurado. Destino={} Assunto={} Link={}",
-                    destino, assunto, link);
+            log.warn("Email nao enviado (SMTP nao configurado). Destino={} Assunto={}", destino, assunto);
             return;
         }
 
@@ -76,7 +75,7 @@ public class EmailService {
             mailSender.send(message);
             log.info("Email enviado para {}: {}", destino, assunto);
         } catch (RuntimeException e) {
-            log.warn("Falha ao enviar email para {}. Link para teste: {}", destino, link, e);
+            log.warn("Falha ao enviar email para {}: {}", destino, e.getMessage());
         }
     }
 }

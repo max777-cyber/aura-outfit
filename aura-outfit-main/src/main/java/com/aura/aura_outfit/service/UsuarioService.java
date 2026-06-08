@@ -287,11 +287,13 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsuarioNaoEncontradoException(id));
 
         if (fotoPerfil != null && !fotoPerfil.isBlank()) {
-            if (!fotoPerfil.startsWith("data:image/")) {
-                throw new IllegalArgumentException("Arquivo de imagem invalido");
+            if (!fotoPerfil.startsWith("data:image/jpeg;base64,")
+                    && !fotoPerfil.startsWith("data:image/png;base64,")
+                    && !fotoPerfil.startsWith("data:image/webp;base64,")) {
+                throw new IllegalArgumentException("Formato de imagem invalido. Use JPEG, PNG ou WebP.");
             }
-            if (fotoPerfil.length() > 1_500_000) {
-                throw new IllegalArgumentException("Imagem muito grande. Escolha uma foto menor.");
+            if (fotoPerfil.length() > 800_000) {
+                throw new IllegalArgumentException("Imagem muito grande. Escolha uma foto menor que 600 KB.");
             }
             usuario.setFotoPerfil(fotoPerfil);
         } else {

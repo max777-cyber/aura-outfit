@@ -45,6 +45,10 @@ public class SecurityConfig {
             .headers(headers -> headers
                 .frameOptions(f -> f.deny())
                 .contentTypeOptions(c -> {})
+                .httpStrictTransportSecurity(hsts -> hsts
+                    .includeSubDomains(true)
+                    .maxAgeInSeconds(31536000)
+                )
             )
             // A autorização fina é feita nos controllers via SessionUtil.
             // O Spring Security aqui só entrega o request.

@@ -53,10 +53,8 @@ public class PagamentoController {
             return;
         }
         MercadoPagoConfig.setAccessToken(accessToken);
-        String sufixo = accessToken.length() >= 6
-                ? accessToken.substring(accessToken.length() - 6)
-                : "***";
-        log.info("✅ Mercado Pago configurado (token termina em ...{})", sufixo);
+        boolean isTeste = accessToken.startsWith("TEST-");
+        log.info("✅ Mercado Pago configurado (modo={})", isTeste ? "SANDBOX/TESTE" : "PRODUÇÃO");
     }
 
     @PostMapping("/criar/{pedidoId}")
@@ -208,7 +206,7 @@ public class PagamentoController {
      */
     @PostMapping("/webhook")
     public ResponseEntity<Void> webhook(@RequestBody Map<String, Object> payload) {
-        log.info("🔔 Webhook MP recebido: {}", payload);
+        log.info("🔔 Webhook MP recebido");
 
         try {
             String type = (String) payload.get("type");
@@ -284,7 +282,12 @@ public class PagamentoController {
             @PathVariable Long pedidoId,
             HttpSession session) {
 
-        // Só o dono do pedido ou admin pode simular
+        if (accessToken == null || !accessToken.startsWith("TEST-")) {
+            return ResponseEntity.status(403).body(Map.of(
+                    "erro", "Simulação disponível apenas em ambiente de teste"
+            ));
+        }
+
         Pedido pedido = pedidoService.buscarPorId(pedidoId);
         sessionUtil.exigirDonoOuAdmin(session, pedido.getUsuario().getId());
 

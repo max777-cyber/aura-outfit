@@ -47,7 +47,10 @@ function renderizarAvatar(perfil) {
   const remover = document.getElementById("btnRemoverFoto");
   if (!avatar) return;
   if (perfil.fotoPerfil) {
-    avatar.innerHTML = `<img src="${perfil.fotoPerfil}" alt="Foto de perfil">`;
+    const img = document.createElement("img");
+    img.src = perfil.fotoPerfil;
+    img.alt = "Foto de perfil";
+    avatar.replaceChildren(img);
     if (remover) remover.style.display = "inline-flex";
     return;
   }
@@ -93,17 +96,15 @@ function atualizarResumoEndereco(endereco) {
   const cep = dados.cep ? `CEP ${dados.cep}` : "";
 
   if (!rua && !bairro && !cidadeUf && !cep) {
-    el.innerHTML = `
-      <strong>Nenhum endereco cadastrado</strong>
-      <span>Adicione um endereco para agilizar sua compra.</span>
-    `;
+    el.innerHTML = "<strong>Nenhum endereco cadastrado</strong><span>Adicione um endereco para agilizar sua compra.</span>";
     return;
   }
 
-  el.innerHTML = `
-    <strong>${rua}${numero}</strong>
-    <span>${[bairro, cidadeUf, cep].filter(Boolean).join("<br>")}</span>
-  `;
+  const strong = document.createElement("strong");
+  strong.textContent = rua + numero;
+  const span = document.createElement("span");
+  span.textContent = [bairro, cidadeUf, cep].filter(Boolean).join(" · ");
+  el.replaceChildren(strong, span);
 }
 
 function montarEndereco() {
