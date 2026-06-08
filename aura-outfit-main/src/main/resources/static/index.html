@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura Outfit</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/nav-user.css">
@@ -142,11 +141,8 @@
     </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-const API = "https://aura-outfit-production.up.railway.app";
+const API = "";
 
 // â”€â”€â”€ Login check via sessÃ£o do servidor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let usuario = null;
@@ -691,7 +687,7 @@ function renderizarProdutos(produtos) {
                 style="cursor:pointer">
                 ${p.imagemUrl
                     ? `<div class="foto-carousel" id="carousel-${p.id}" data-single="true">
-                            <img id="foto-${p.id}" class="produto-foto produto-foto-${p.id}" src="${p.imagemUrl}" alt="${p.nome}"
+                            <img id="foto-${p.id}" class="produto-foto produto-foto-${p.id}" src="${p.imagemUrl}" alt="${p.nome}" loading="lazy"
                                 onerror="this.parentElement.innerHTML='<span class=emoji>Produto</span>'" />
                             <button class="foto-nav foto-prev" type="button" aria-label="Foto anterior"
                                 onclick="event.stopPropagation(); trocarFoto(${p.id}, -1)">&lt;</button>
