@@ -202,9 +202,9 @@ function atualizarUI(estado) {
     } else { // pendente
         icone.textContent = "⏳";
         titulo.textContent = "Pagamento Pendente";
-        sub.innerHTML = "Seu pagamento esta sendo processado.<br>Aguarde a confirmacao.";
+        sub.innerHTML = "Seu pagamento esta sendo processado.<br>Se preferir, tente pagar novamente.";
         statusEl.innerHTML = "Status: <strong>Pendente</strong> — em processamento";
-        if (btnPagar) btnPagar.style.display = "none";
+        if (btnPagar) { btnPagar.style.display = "flex"; btnPagar.textContent = "Tentar Pagar Novamente"; }
     }
 }
 
