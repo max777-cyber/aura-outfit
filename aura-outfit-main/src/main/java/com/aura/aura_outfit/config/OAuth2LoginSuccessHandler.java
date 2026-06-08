@@ -26,25 +26,37 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
+        try {
+            OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
 
-        String email = oauthUser.getAttribute("email");
-        String nome = oauthUser.getAttribute("name");
-        String fotoPerfil = oauthUser.getAttribute("picture");
+            String email = oauthUser.getAttribute("email");
+            String nome = oauthUser.getAttribute("name");
+            String fotoPerfil = oauthUser.getAttribute("picture");
 
-        Usuario usuario = usuarioService.loginComGoogle(email, nome, fotoPerfil);
+            if (email == null || email.isBlank()) {
+                response.sendRedirect("/login.html?oauth2=erro");
+                return;
+            }
 
-        HttpSession antiga = request.getSession(false);
-        if (antiga != null) {
-            antiga.invalidate();
+            Usuario usuario = usuarioService.loginComGoogle(email, nome, fotoPerfil);
+
+            HttpSession antiga = request.getSession(false);
+            if (antiga != null) {
+                antiga.invalidate();
+            }
+
+            HttpSession nova = request.getSession(true);
+            nova.setAttribute("usuarioId", usuario.getId());
+            nova.setAttribute("usuarioNome", usuario.getNome());
+            nova.setAttribute("usuarioEmail", usuario.getEmail());
+            nova.setAttribute("usuarioRole", usuario.getRole());
+
+            System.out.println("✅ Sessão criada: " + nova.getId() + " | usuarioId: " + usuario.getId());
+
+            response.sendRedirect("/");
+        } catch (Exception e) {
+            System.out.println("❌ Erro no OAuth2: " + e.getMessage());
+            response.sendRedirect("/login.html?oauth2=erro");
         }
-
-        HttpSession nova = request.getSession(true);
-        nova.setAttribute("usuarioId", usuario.getId());
-        nova.setAttribute("usuarioNome", usuario.getNome());
-        nova.setAttribute("usuarioEmail", usuario.getEmail());
-        nova.setAttribute("usuarioRole", usuario.getRole());
-
-        response.sendRedirect("/");
     }
 }

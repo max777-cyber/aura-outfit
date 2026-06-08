@@ -1,5 +1,8 @@
 (function () {
-  const API = "http://localhost:8080";
+const API = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? ""
+    : ""; // Deixar vazio em produção para usar caminhos relativos
+
 
   function firstName(name) {
     return (name || "Perfil").trim().split(/\s+/)[0] || "Perfil";

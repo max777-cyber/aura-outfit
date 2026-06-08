@@ -11,4 +11,4 @@ WORKDIR /app
 RUN mkdir -p /app/data
 COPY --from=build /workspace/target/*.jar /app/aura-outfit.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/aura-outfit.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/aura-outfit.jar"]

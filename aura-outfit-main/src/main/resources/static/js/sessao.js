@@ -1,5 +1,8 @@
 // sessao.js — verifica sessão do servidor em todas as páginas
-const API = "http://localhost:8080";
+const API = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" 
+    ? "" 
+    : "";
+
 
 async function verificarSessao() {
     try {

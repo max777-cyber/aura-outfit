@@ -69,7 +69,7 @@
 </footer>
 
 <script>
-const API = "http://localhost:8080";
+const API_BASE = window.location.origin + "/api/usuarios";
 const params = new URLSearchParams(window.location.search);
 if (params.get("oauth2") === "erro") {
     window.addEventListener("DOMContentLoaded", () => {
@@ -133,7 +133,7 @@ async function logar() {
     }
 
     try {
-        const res = await fetch(`${API}/api/usuarios/login`, {
+        const res = await fetch(`${API_BASE}/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -207,7 +207,7 @@ async function cadastrar() {
     }
 
     try {
-        const res = await fetch(`${API}/api/usuarios/cadastro`, {
+        const res = await fetch(`${API_BASE}/cadastro`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -272,7 +272,7 @@ async function solicitarRecuperacao() {
     }
 
     try {
-        const res = await fetch(`${API}/api/usuarios/recuperar-senha`, {
+        const res = await fetch(`${API_BASE}/recuperar-senha`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -321,5 +321,3 @@ document.getElementById("nomeCadastro")
   <script src="js/nav-user.js"></script>
 </body>
 </html>
-
-

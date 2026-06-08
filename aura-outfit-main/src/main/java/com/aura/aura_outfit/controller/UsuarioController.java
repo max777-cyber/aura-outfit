@@ -100,7 +100,7 @@ public class UsuarioController {
     public ResponseEntity<Map<String, Object>> sessao(HttpSession session) {
         Long id = sessionUtil.getUsuarioIdLogado(session);
         if (id == null) {
-            return ResponseEntity.status(401).body(Map.of("logado", false));
+            return ResponseEntity.ok(Map.of("logado", false));
         }
         Usuario usuario = usuarioService.buscarEntidadePorId(id);
         return ResponseEntity.ok(Map.of(

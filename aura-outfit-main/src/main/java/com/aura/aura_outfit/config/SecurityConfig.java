@@ -52,7 +52,9 @@ public class SecurityConfig {
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login.html")
                 .successHandler(oauth2LoginSuccessHandler)
-                .failureUrl("/login.html?oauth2=erro")
+                .failureHandler((request, response, exception) -> {
+                    response.sendRedirect("/login.html?oauth2=erro");
+                })
             );
         return http.build();
     }

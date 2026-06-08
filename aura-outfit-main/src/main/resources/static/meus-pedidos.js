@@ -1,4 +1,4 @@
-const API_PEDIDOS = "http://localhost:8080";
+const API_PEDIDOS = "";
 let usuarioPedidos = null;
 let pedidosAtuais = [];
 
