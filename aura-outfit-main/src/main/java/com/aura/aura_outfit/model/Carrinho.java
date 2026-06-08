@@ -1,5 +1,6 @@
 package com.aura.aura_outfit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -16,8 +17,7 @@ public class Carrinho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Ignora "carrinho" e "pedidos" do Usuario pra evitar loop infinito no JSON
-    @JsonIgnoreProperties({"senha", "telefone", "endereco", "documento", "carrinho", "pedidos"})
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false, unique = true)
     private Usuario usuario;

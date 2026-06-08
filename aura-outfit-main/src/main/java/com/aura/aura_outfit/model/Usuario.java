@@ -29,8 +29,7 @@ public class Usuario {
     private String endereco;
     private String documento;
 
-    @Lob
-    @Column(name = "foto_perfil")
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
 
     @Column(name = "email_confirmado", nullable = false)

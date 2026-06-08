@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Produto - Aura Outfit</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/produto.css">
   <link rel="stylesheet" href="css/nav-user.css">
   <link rel="stylesheet" href="css/responsive.css">
@@ -304,9 +304,13 @@ async function adicionarAoCarrinho() {
         return;
     }
 
+    const btn = document.getElementById("btnCarrinho");
+    btn.disabled = true;
+    btn.textContent = "Adicionando...";
+
     try {
 
-        await fetch(
+        const res = await fetch(
             `${API}/api/carrinho/${usuario.id}/produtos/${produtoId}?quantidade=1&tamanho=${encodeURIComponent(tamanhoSelecionado)}`,
             {
                 method: "POST",
@@ -314,21 +318,25 @@ async function adicionarAoCarrinho() {
             }
         );
 
-        const btn = document.getElementById("btnCarrinho");
+        if (!res.ok) {
+            if (res.status === 401 || res.status === 403) {
+                window.location.href = "/login";
+                return;
+            }
+            throw new Error("Erro " + res.status);
+        }
 
-        btn.textContent = "Adicionado!";
-        btn.style.background = "var(--green-dark)";
+        btn.textContent = "Adicionado! ✓";
 
         setTimeout(() => {
-
             btn.textContent = "Adicionar ao Carrinho";
-            btn.style.background = "";
-
+            btn.disabled = false;
         }, 2000);
 
     } catch {
-
-        mostrarErro("Erro ao adicionar ao carrinho.");
+        mostrarErro("Erro ao adicionar ao carrinho. Tente novamente.");
+        btn.textContent = "Adicionar ao Carrinho";
+        btn.disabled = false;
     }
 }
 

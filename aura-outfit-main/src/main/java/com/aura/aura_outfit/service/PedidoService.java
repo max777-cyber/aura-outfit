@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
@@ -35,16 +36,19 @@ public class PedidoService {
         this.estoqueService = estoqueService;
     }
 
+    @Transactional(readOnly = true)
     public List<Pedido> listar() {
         return pedidoRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Pedido> buscarPorUsuario(Long usuarioId) {
-        return pedidoRepository.findByUsuarioId(usuarioId);
+        return pedidoRepository.findByUsuarioIdComItens(usuarioId);
     }
 
+    @Transactional(readOnly = true)
     public Pedido buscarPorId(Long id) {
-        return pedidoRepository.findById(id)
+        return pedidoRepository.findByIdComItens(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
     }
 

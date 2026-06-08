@@ -1,257 +1,216 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedido Confirmado - Aura Outfit</title>
+    <title>Pedido - Aura Outfit</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/pedido.css">
-  <link rel="stylesheet" href="css/nav-user.css">
-  <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/nav-user.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 
 <nav>
-    <span class="logo">AURA OUTFIT</span>
-
+    <a href="/" class="logo">AURA OUTFIT</a>
     <ul>
-        <li><a href="/">InÃ­cio</a></li>
-        <li><a href="/carrinho.html">Carrinho</a></li>
-        <li><a href="/perfil.html">Perfil</a></li>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/carrinho">Carrinho</a></li>
+        <li><a href="/perfil">Perfil</a></li>
     </ul>
 </nav>
 
 <div class="container">
     <div class="box">
 
-        <div class="icone" id="icone">âœ“</div>
+        <div class="icone" id="icone">&#10003;</div>
 
-        <h1 id="titulo">Pedido Confirmado!</h1>
+        <h1 id="titulo">Pedido Criado!</h1>
 
         <p class="subtitulo" id="subtitulo">
-            Seu pedido foi realizado com sucesso.<br>
-            Acompanhe o status na sua Ã¡rea de perfil.
+            Seu pedido foi registrado com sucesso.<br>
+            Clique abaixo para realizar o pagamento.
         </p>
 
         <div class="numero-pedido">
-            <p class="label">NÃºmero do Pedido</p>
+            <p class="label">Numero do Pedido</p>
             <p class="valor" id="numeroPedido">---</p>
         </div>
 
         <div class="info-status" id="infoStatus">
             <div class="dot"></div>
-
-            <span id="statusTexto">
-                Status: <strong>Pendente</strong> â€” em processamento
-            </span>
+            <span id="statusTexto">Status: <strong>Aguardando Pagamento</strong></span>
         </div>
 
         <div class="acoes">
-            <a href="/index.html" class="btn-primary">
-                Continuar Comprando
-            </a>
+            <button id="btnPagar" class="btn-primary" onclick="abrirPagamento(false)">
+                Ir para Pagamento
+            </button>
 
-            <a href="/meus-pedidos.html" class="btn-ghost">
-                Ver Meus Pedidos
-            </a>
+            <a href="/" class="btn-ghost">Continuar Comprando</a>
+
+            <a href="/meus-pedidos.html" class="btn-ghost">Ver Meus Pedidos</a>
         </div>
 
     </div>
 </div>
 
 <footer>
-    Â© 2026 Aura Outfit â€” Todos os direitos reservados
+    &copy; 2026 Aura Outfit &mdash; Todos os direitos reservados
 </footer>
 
 <script>
 const API = "";
+let pedidoId = null;
+
 async function carregarPedido() {
-
-    // 1ï¸âƒ£ Tenta pegar o pedidoId da URL
     const params = new URLSearchParams(window.location.search);
-
-    let pedidoId = params.get("pedidoId");
-
     const statusVolta = params.get("status");
-    const statusMP = params.get("collection_status");
+    const statusMP    = params.get("collection_status");
 
-    // 2ï¸âƒ£ Se nÃ£o veio pela URL, tenta da sessionStorage
-    if (!pedidoId) {
-        pedidoId = sessionStorage.getItem("ultimoPedidoId");
+    // 1. URL
+    let pid = params.get("pedidoId");
+
+    // 2. sessionStorage
+    if (!pid || pid === "null" || pid === "undefined") {
+        pid = sessionStorage.getItem("ultimoPedidoId");
     }
 
-    // 3ï¸âƒ£ Ãšltimo recurso: busca Ãºltimo pedido do usuÃ¡rio
-    if (!pedidoId) {
-
-        try {
-
-            const resSessao = await fetch(`${API}/api/usuarios/sessao`, {
-                credentials: "include"
-            });
-
-            const sessao = await resSessao.json();
-
-            if (sessao.logado) {
-
-                const resPedidos = await fetch(
-                    `${API}/api/pedidos/usuario/${sessao.id}`,
-                    {
-                        credentials: "include"
-                    }
-                );
-
-                if (resPedidos.ok) {
-
-                    const pedidos = await resPedidos.json();
-
-                    if (pedidos.length > 0) {
-                        pedidoId = pedidos[pedidos.length - 1].id;
-                    }
-                }
-            }
-
-        } catch {}
+    // 3. API — ultimo pedido do usuario logado
+    if (!pid || pid === "null" || pid === "undefined") {
+        pid = await buscarUltimoPedidoDaApi();
     }
 
+    if (pid && pid !== "null" && pid !== "undefined") {
+        pedidoId = pid;
+        document.getElementById("numeroPedido").textContent =
+            "#" + String(pedidoId).padStart(5, "0");
+        sessionStorage.removeItem("ultimoPedidoId");
+    }
+
+    const aprovado = statusVolta === "aprovado" || statusMP === "approved";
+    const pendente  = statusVolta === "pendente" || statusMP === "pending" || statusMP === "in_process";
+    const falhou    = statusVolta === "falhou"   || statusMP === "rejected" || statusMP === "cancelled";
+
+    if (aprovado) {
+        await confirmarPagamentoNoBackend(pedidoId);
+        atualizarUI("aprovado");
+        if (window.history.replaceState) {
+            window.history.replaceState({}, document.title, "/pedido.html");
+        }
+    } else if (falhou) {
+        atualizarUI("falhou");
+    } else if (pendente) {
+        atualizarUI("pendente");
+    } else {
+        // Recém-criado: tenta abrir o Mercado Pago automaticamente
+        atualizarUI("aguardando");
+        if (pedidoId) abrirPagamento(true);
+    }
+}
+
+async function buscarUltimoPedidoDaApi() {
+    try {
+        const resSessao = await fetch(API + "/api/usuarios/sessao", { credentials: "include" });
+        const sessao = await resSessao.json();
+        if (!sessao.logado) return null;
+        const resPed = await fetch(API + "/api/pedidos/usuario/" + sessao.id, { credentials: "include" });
+        if (!resPed.ok) return null;
+        const lista = await resPed.json();
+        if (lista.length > 0) return lista[lista.length - 1].id;
+    } catch {}
+    return null;
+}
+
+async function abrirPagamento(silencioso) {
     if (!pedidoId) {
-        document.getElementById("numeroPedido").textContent = "---";
+        if (!silencioso) alert("Pedido nao encontrado. Volte ao carrinho.");
         return;
     }
 
-    document.getElementById("numeroPedido").textContent =
-        "#" + String(pedidoId).padStart(5, "0");
+    const btn = document.getElementById("btnPagar");
+    if (btn) { btn.disabled = true; btn.textContent = "Abrindo pagamento..."; }
 
-    sessionStorage.removeItem("ultimoPedidoId");
+    try {
+        const res = await fetch(API + "/api/pagamento/criar/" + pedidoId, {
+            method: "POST",
+            credentials: "include"
+        });
 
-    const aprovado =
-        (statusVolta === "aprovado") ||
-        (statusMP === "approved");
-
-    const pendente =
-        (statusVolta === "pendente") ||
-        (statusMP === "pending") ||
-        (statusMP === "in_process");
-
-    const falhou =
-        (statusVolta === "falhou") ||
-        (statusMP === "rejected") ||
-        (statusMP === "cancelled");
-
-    if (aprovado) {
-
-        await confirmarPagamentoNoBackend(pedidoId);
-
-        atualizarUI("aprovado");
-
-        if (window.history.replaceState) {
-            window.history.replaceState(
-                {},
-                document.title,
-                "/pedido"
-            );
+        if (!res.ok) {
+            const err = await res.json().catch(function() { return {}; });
+            throw new Error(err.erro || "Erro " + res.status + " ao criar pagamento");
         }
 
-    } else if (pendente) {
-
-        atualizarUI("pendente");
-
-    } else if (falhou) {
-
-        atualizarUI("falhou");
-
-    } else {
-
-        atualizarUI("pendente");
+        const dados = await res.json();
+        if (dados.checkoutUrl) {
+            window.location.href = dados.checkoutUrl;
+            return;
+        }
+        throw new Error("Link de pagamento nao retornado");
+    } catch (e) {
+        if (!silencioso) alert(e.message || "Nao foi possivel abrir o pagamento. Tente novamente.");
+        if (btn) { btn.disabled = false; btn.textContent = "Ir para Pagamento"; }
     }
 }
 
-async function confirmarPagamentoNoBackend(pedidoId) {
-
+async function confirmarPagamentoNoBackend(id) {
     try {
-
-        const res = await fetch(
-            `${API}/api/pagamento/simular-pagamento/${pedidoId}`,
-            {
-                method: "POST",
-                credentials: "include"
-            }
-        );
-
-        if (!res.ok) {
-            console.warn(
-                "NÃ£o foi possÃ­vel confirmar o pagamento"
-            );
-        }
-
-    } catch (e) {
-
-        console.warn("Erro ao confirmar pagamento:", e);
-    }
+        await fetch(API + "/api/pagamento/simular-pagamento/" + id, {
+            method: "POST", credentials: "include"
+        });
+    } catch {}
 }
 
 function atualizarUI(estado) {
+    const icone    = document.getElementById("icone");
+    const titulo   = document.getElementById("titulo");
+    const sub      = document.getElementById("subtitulo");
+    const statusEl = document.getElementById("statusTexto");
+    const infoBox  = document.getElementById("infoStatus");
+    const btnPagar = document.getElementById("btnPagar");
 
-    const icone = document.getElementById("icone");
-    const titulo = document.getElementById("titulo");
-    const subtitulo = document.getElementById("subtitulo");
-    const status = document.getElementById("statusTexto");
-    const infoBox = document.getElementById("infoStatus");
+    if (estado === "aguardando") {
+        icone.textContent = "&#128179;";
+        titulo.textContent = "Pedido Criado!";
+        sub.innerHTML = "Seu pedido foi registrado com sucesso.<br>Clique abaixo para realizar o pagamento.";
+        statusEl.innerHTML = "Status: <strong>Aguardando Pagamento</strong>";
+        if (btnPagar) { btnPagar.style.display = "flex"; btnPagar.textContent = "Ir para Pagamento"; }
 
-    if (estado === "aprovado") {
-
-        icone.textContent = "âœ“";
-
+    } else if (estado === "aprovado") {
+        icone.textContent = "✔";
         titulo.textContent = "Pagamento Aprovado!";
-
-        subtitulo.innerHTML =
-            "Tudo certo! Seu pedido jÃ¡ foi confirmado.<br>" +
-            "Em breve vocÃª receberÃ¡ o cÃ³digo de rastreio por e-mail.";
-
-        status.innerHTML =
-            "Status: <strong>Pago</strong> â€” pedido em separaÃ§Ã£o";
+        sub.innerHTML = "Tudo certo! Seu pedido foi confirmado.<br>Em breve voce recebera o codigo de rastreio por e-mail.";
+        statusEl.innerHTML = "Status: <strong>Pago</strong> — pedido em separacao";
+        if (btnPagar) btnPagar.style.display = "none";
 
     } else if (estado === "falhou") {
-
-        icone.textContent = "âœ—";
-
+        icone.textContent = "✗";
         icone.style.background = "#2e0a0a";
         icone.style.borderColor = "#e74c3c";
         icone.style.color = "#e74c3c";
-
-        titulo.textContent = "Pagamento nÃ£o aprovado";
-
-        subtitulo.innerHTML =
-            "Houve um problema com seu pagamento.<br>" +
-            "VocÃª pode tentar novamente pelo carrinho.";
-
+        titulo.textContent = "Pagamento nao aprovado";
+        sub.innerHTML = "Houve um problema com seu pagamento.<br>Tente novamente.";
         infoBox.style.background = "#2e0a0a";
         infoBox.style.borderColor = "#e74c3c";
         infoBox.style.color = "#e74c3c";
+        statusEl.innerHTML = "Status: <strong>Cancelado</strong>";
+        if (btnPagar) { btnPagar.textContent = "Tentar Novamente"; btnPagar.style.display = "flex"; }
 
-        status.innerHTML =
-            "Status: <strong>Cancelado</strong>";
-
-    } else {
-
-        icone.textContent = "â³";
-
-        titulo.textContent = "Pedido Confirmado!";
-
-        subtitulo.innerHTML =
-            "Seu pedido foi realizado.<br>" +
-            "Aguardando confirmaÃ§Ã£o do pagamento.";
-
-        status.innerHTML =
-            "Status: <strong>Pendente</strong> â€” em processamento";
+    } else { // pendente
+        icone.textContent = "⏳";
+        titulo.textContent = "Pagamento Pendente";
+        sub.innerHTML = "Seu pagamento esta sendo processado.<br>Aguarde a confirmacao.";
+        statusEl.innerHTML = "Status: <strong>Pendente</strong> — em processamento";
+        if (btnPagar) btnPagar.style.display = "none";
     }
 }
 
 carregarPedido();
 </script>
 
-  <script src="js/nav-user.js"></script>
+<script src="js/nav-user.js"></script>
 </body>
 </html>
-

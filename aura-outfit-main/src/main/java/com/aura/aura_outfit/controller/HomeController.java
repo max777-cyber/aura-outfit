@@ -18,7 +18,10 @@ public class HomeController {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(@RequestParam(required = false) String oauth2) {
+        if (oauth2 != null) {
+            return "redirect:/login.html?oauth2=" + oauth2;
+        }
         return "redirect:/login.html";
     }
 
@@ -28,8 +31,23 @@ public class HomeController {
     }
 
     @GetMapping("/pedido")
-    public String pedido() {
-        return "redirect:/pedido.html";
+    public String pedido(@RequestParam(required = false) Long pedidoId,
+                         @RequestParam(required = false) String status,
+                         @RequestParam(required = false) String collection_status) {
+        StringBuilder url = new StringBuilder("redirect:/pedido.html");
+        boolean temParam = false;
+        if (pedidoId != null) {
+            url.append("?pedidoId=").append(pedidoId);
+            temParam = true;
+        }
+        if (status != null) {
+            url.append(temParam ? "&" : "?").append("status=").append(status);
+            temParam = true;
+        }
+        if (collection_status != null) {
+            url.append(temParam ? "&" : "?").append("collection_status=").append(collection_status);
+        }
+        return url.toString();
     }
 
     @GetMapping("/produto")

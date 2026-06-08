@@ -1,6 +1,6 @@
 package com.aura.aura_outfit.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,12 +14,7 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Ignora TUDO que pode causar ciclo: senha, carrinho, pedidos, e proxy do Hibernate
-    @JsonIgnoreProperties({
-        "senha", "telefone", "endereco", "documento",
-        "carrinho", "pedidos",
-        "hibernateLazyInitializer", "handler"
-    })
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;

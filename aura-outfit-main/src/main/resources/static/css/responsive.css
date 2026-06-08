@@ -5,6 +5,8 @@ html {
 
 body {
   overflow-x: clip;
+  /* Previne overflow horizontal em todos os browsers */
+  max-width: 100vw;
 }
 
 img,
@@ -241,6 +243,17 @@ nav ul a,
   nav {
     padding-left: 14px !important;
     padding-right: 14px !important;
+    grid-template-columns: 1fr auto !important;
+    grid-template-rows: auto auto;
+    height: auto !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    gap: 8px !important;
+  }
+
+  .nav-search-wrap {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .logo {
@@ -457,5 +470,346 @@ nav ul a,
   .item,
   .comentario-item {
     padding: 14px;
+  }
+}
+
+/* ============================================================
+   CORREÇÕES DE COMPATIBILIDADE — Safari / WebKit
+   Adiciona -webkit-backdrop-filter onde faltava
+   ============================================================ */
+
+nav,
+.itens-col,
+.resumo,
+.benefits,
+.search-panel,
+.categoria-card,
+.card,
+.service-strip,
+.cadastro-modal,
+.modal,
+.perfil-card-top,
+.card-item,
+.resumo-card,
+.painel-card,
+.alerta-inner,
+.overlay,
+.box {
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ============================================================
+   CORREÇÕES DE CONTRASTE — acessibilidade
+   --muted #aaa2b0 sobre #050505 = ratio ~5.1:1 (AA pass)
+   No entanto, textos informativos menores podem ficar abaixo
+   do mínimo recomendado; aumentamos levemente a legibilidade
+   nos contextos críticos
+   ============================================================ */
+
+.card-marca,
+.hero-eyebrow,
+.tamanhos-label,
+.produto-marca,
+.produto-genero,
+.media-num,
+.stat-label,
+.frete-erro,
+.comentario-data {
+  color: #b8b0be; /* levemente mais claro que --muted para melhor contraste */
+}
+
+/* ============================================================
+   ACESSIBILIDADE — foco visível em botões e links
+   ============================================================ */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #c24cff;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   UX MOBILE — Botões com mínimo 44px (touch target)
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .tamanho-btn {
+    min-height: 44px;
+    padding: 0 14px;
+  }
+
+  .card-btn,
+  .btn-carrinho,
+  .btn-comentar,
+  .btn-finalizar,
+  .btn-continuar,
+  .btn-limpar,
+  .btn-cep,
+  .btn-buscar,
+  .btn-primary,
+  .btn-ghost,
+  .btn-primario,
+  .btn-secundario,
+  .btn-cancelar,
+  .btn-salvar,
+  .btn-principal,
+  .btn-alerta,
+  .modal-btn,
+  .hero-btn,
+  .status-btn,
+  .btn-buscar-nav {
+    min-height: 44px;
+  }
+
+  /* Evita zoom no iOS: font-size mínimo 16px em inputs */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Exceção: inputs dentro de nav que já têm font correto */
+  .nav-search-wrap input {
+    font-size: 16px !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — carrinho: evita minWidth quebrando layout
+   A regra principal já está em @media (max-width: 900px) acima.
+   A regra de carrinho.css cobre 920px especificamente para aquela página.
+   ============================================================ */
+
+/* ============================================================
+   RESPONSIVIDADE — produto.html com :root diferente
+   Garante que a página de produto use as cores corretas
+   no contexto responsivo
+   ============================================================ */
+
+/* produto-wrap já tem responsive em produto.css; reforçamos aqui */
+@media (max-width: 700px) {
+  .produto-wrap {
+    grid-template-columns: 1fr !important;
+  }
+
+  .produto-img {
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — index: cards de produto mínimo 160px
+   Evita colunas excessivamente estreitas em telas pequenas
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .produtos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+/* Em telas muito pequenas (320-380px), uma coluna apenas nos produtos */
+@media (max-width: 380px) {
+  .produtos-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — categorias: mínimo 2 colunas em tablet,
+   1 coluna em mobile pequeno
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .categorias-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .categorias-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 320px) {
+  .categorias-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — hero-content: margem menor em telas
+   muito pequenas para evitar overflow
+   ============================================================ */
+
+@media (max-width: 380px) {
+  .hero-content {
+    margin-left: 14px;
+    width: calc(100% - 28px);
+  }
+
+  .hero-content h1 {
+    font-size: clamp(54px, 18vw, 72px);
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — nav 320px: logo e ações não quebram
+   ============================================================ */
+
+@media (max-width: 380px) {
+  .logo {
+    font-size: 20px !important;
+    letter-spacing: 3px !important;
+  }
+
+  .aura-user-name,
+  .user-name {
+    display: none;
+  }
+
+  .profile-chip {
+    padding: 0 8px;
+    font-size: 11px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — carrinho: itens com grid correto em 320px
+   ============================================================ */
+
+@media (max-width: 380px) {
+  .item {
+    grid-template-columns: 64px minmax(0, 1fr) !important;
+    gap: 10px;
+  }
+
+  .item-img,
+  .item-icon {
+    width: 64px !important;
+    height: 64px !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — perfil e meus-pedidos em 320px
+   ============================================================ */
+
+@media (max-width: 380px) {
+  .cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pedido-card {
+    padding: 12px !important;
+  }
+
+  .pedidos-filtros {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVIDADE — pedido.html box em mobile
+   ============================================================ */
+
+@media (max-width: 380px) {
+  .box {
+    padding: 24px 16px !important;
+    border-radius: 12px;
+  }
+}
+
+/* ============================================================
+   NAVEGAÇÃO — dropdown user não sai da tela em mobile
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .aura-user-dropdown,
+  .user-dropdown {
+    right: 0;
+    left: auto;
+    max-width: calc(100vw - 24px);
+    min-width: 160px;
+  }
+}
+
+/* ============================================================
+   NAVEGAÇÃO — search bar no mobile: evita overflow
+   ============================================================ */
+
+@media (max-width: 720px) {
+  .nav-search-wrap {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .btn-buscar-nav {
+    padding: 0 14px;
+    font-size: 14px;
+    min-height: 44px;
+  }
+}
+
+/* ============================================================
+   SERVICE STRIP — força 1 coluna em mobile
+   ============================================================ */
+
+@media (max-width: 560px) {
+  .service-strip {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================
+   ASPECT-RATIO FALLBACK — browsers sem suporte
+   ============================================================ */
+
+.produto-img:not([style]),
+.card-img:not([style]) {
+  position: relative;
+}
+
+/* Fallback via padding-top para aspect-ratio 1:1 em browsers antigos */
+@supports not (aspect-ratio: 1) {
+  .produto-img {
+    padding-top: 100%;
+    height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .produto-img > * {
+    position: absolute;
+    inset: 0;
+  }
+
+  .card-img {
+    padding-top: 86%;
+    height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card-img > * {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+/* ============================================================
+   FOOTER — layout em mobile
+   ============================================================ */
+
+@media (max-width: 560px) {
+  footer {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
   }
 }

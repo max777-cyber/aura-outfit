@@ -8,8 +8,10 @@ import com.aura.aura_outfit.repository.CarrinhoRepository;
 import com.aura.aura_outfit.repository.ProdutoRepository;
 import com.aura.aura_outfit.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CarrinhoService {
 
     private final CarrinhoRepository carrinhoRepository;
@@ -28,7 +30,7 @@ public class CarrinhoService {
     }
 
     public Carrinho obterOuCriarCarrinho(Long usuarioId) {
-        return carrinhoRepository.findByUsuarioId(usuarioId)
+        return carrinhoRepository.findByUsuarioIdComItens(usuarioId)
                 .orElseGet(() -> {
                     Usuario usuario = usuarioRepository.findById(usuarioId)
                             .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
@@ -146,7 +148,9 @@ public class CarrinhoService {
         return carrinhoRepository.save(carrinho);
     }
 
+    @Transactional(readOnly = true)
     public Carrinho buscarCarrinho(Long usuarioId) {
-        return obterOuCriarCarrinho(usuarioId);
+        return carrinhoRepository.findByUsuarioIdComItens(usuarioId)
+                .orElseGet(() -> obterOuCriarCarrinho(usuarioId));
     }
 }

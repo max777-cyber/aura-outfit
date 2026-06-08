@@ -294,6 +294,9 @@ async function finalizar() {
         return;
     }
 
+    const btn = document.getElementById("btnFinalizar");
+    if (btn) { btn.disabled = true; btn.textContent = "Processando..."; }
+
     try {
         const res = await fetch(`${API}/api/pedidos/finalizar/${usuario.id}`, {
             method: "POST",
@@ -307,9 +310,9 @@ async function finalizar() {
         }
 
         sessionStorage.setItem("ultimoPedidoId", pedido.id);
-        mostrarOk("Pedido criado com sucesso.");
-        window.location.href = `/pedido?pedidoId=${pedido.id}`;
+        window.location.href = `/pedido.html?pedidoId=${pedido.id}`;
     } catch (e) {
+        if (btn) { btn.disabled = false; btn.textContent = "Finalizar Pedido"; }
         mostrarErro(e.message || "Nao foi possivel finalizar o pedido.");
     }
 }

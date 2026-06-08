@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/nav-user.css">
@@ -17,6 +17,27 @@
 
 <nav>
     <a href="/" class="logo">AURA OUTFIT</a>
+    <div class="nav-search-wrap">
+        <!-- honeypots para absorver o autofill do browser antes de chegar na busca -->
+        <input type="text"     style="opacity:0;position:absolute;width:0;height:0;pointer-events:none" autocomplete="username"         tabindex="-1" aria-hidden="true" />
+        <input type="password" style="opacity:0;position:absolute;width:0;height:0;pointer-events:none" autocomplete="current-password" tabindex="-1" aria-hidden="true" />
+        <span class="nav-search-icon">&#128269;</span>
+        <input
+            id="termoBusca"
+            name="busca_produto"
+            type="text"
+            value=""
+            placeholder="O que voce esta procurando?"
+            autocomplete="new-password"
+            autocapitalize="off"
+            spellcheck="false"
+            data-lpignore="true"
+            data-1p-ignore="true"
+            data-form-type="other"
+            onkeydown="if(event.key==='Enter') buscarProdutos()"
+        />
+        <button class="btn-buscar-nav" onclick="buscarProdutos()">Buscar</button>
+    </div>
     <div class="nav-actions" id="navActions">
         <a href="#" class="profile-chip signup-chip" onclick="abrirModal(); return false;">Cadastrar</a>
         <a href="/login" class="profile-chip signup-chip">Entrar</a>
@@ -41,34 +62,6 @@
 </section>
 
 <main class="home-shell">
-    <section class="search-panel">
-        <div class="welcome-text" id="welcomeText">Bem-vindo(a) a Aura Outfit</div>
-        <input
-            id="termoBusca"
-            name="aura_produto_filtro_2026"
-            type="search"
-            value=""
-            placeholder="O que voce esta procurando?"
-            autocomplete="off"
-            autocapitalize="off"
-            spellcheck="false"
-            readonly
-            data-lpignore="true"
-            data-1p-ignore="true"
-            data-form-type="other"
-        />
-
-        <select id="filtroGenero">
-            <option value="">Todos os generos</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Unissex">Unissex</option>
-        </select>
-
-        <button onclick="buscarProdutos()">Buscar</button>
-        <button class="btn-ghost" onclick="listarProdutos()">Ver todos</button>
-    </section>
-
     <section class="categorias" id="categorias">
         <p class="section-title">Categorias</p>
         <div class="categorias-grid">
@@ -117,9 +110,9 @@
 
         <div class="msg msg-err" id="msgErr"></div>
 
-        <input id="nome" placeholder="Nome completo" />
-        <input id="email" placeholder="E-mail" type="email" />
-        <input id="senha" placeholder="Senha (minimo 8 caracteres, com letra e numero)" type="password" />
+        <input id="nome" placeholder="Nome completo" aria-label="Nome completo" autocomplete="name" />
+        <input id="email" placeholder="E-mail" type="email" aria-label="E-mail" autocomplete="email" />
+        <input id="senha" placeholder="Senha (minimo 8 caracteres, com letra e numero)" type="password" aria-label="Senha" autocomplete="new-password" />
 
         <button class="modal-btn" type="button" onclick="cadastrar()">
             Cadastrar
@@ -191,14 +184,6 @@ async function verificarSessao() {
         if (data.logado) {
             usuario = data;
 
-            document.getElementById("navLinks").innerHTML = `
-                <li><a href="/" class="active">Inicio</a></li>
-                <li><a href="#produtos">Masculino</a></li>
-                <li><a href="#produtos">Feminino</a></li>
-                <li><a href="#categorias">Acessorios</a></li>
-                <li><a href="#categorias">Colecoes</a></li>
-                <li><a href="#produtos">Lancamentos</a></li>`;
-
             const primeiroNome = (data.nome || "Perfil").trim().split(" ")[0];
             const iniciais = (data.nome || data.email || "A")
                 .trim()
@@ -223,9 +208,6 @@ async function verificarSessao() {
                     </div>
                 </div>`;
 
-            const welcome = document.getElementById("welcomeText");
-            if (welcome) welcome.textContent = `Bem-vindo de volta, ${primeiroNome}`;
-
             limparEmailDaBusca();
         }
     } catch {}
@@ -244,28 +226,17 @@ function limparEmailDaBusca() {
 
 function protegerBuscaContraAutofill() {
     const termoBusca = document.getElementById("termoBusca");
-    if (!termoBusca) {
-        return;
-    }
+    if (!termoBusca) return;
 
-    termoBusca.setAttribute("autocomplete", "off");
-    termoBusca.setAttribute("name", "aura_produto_filtro_2026");
     limparEmailDaBusca();
 
-    setTimeout(() => {
+    // Limpa por 3 segundos usando rAF para pegar qualquer autofill tardio
+    const inicio = Date.now();
+    function frame() {
         limparEmailDaBusca();
-        termoBusca.removeAttribute("readonly");
-    }, 150);
-
-    let tentativas = 0;
-    const limpeza = setInterval(() => {
-        limparEmailDaBusca();
-        tentativas += 1;
-
-        if (tentativas >= 20) {
-            clearInterval(limpeza);
-        }
-    }, 250);
+        if (Date.now() - inicio < 3000) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
 }
 
 document.addEventListener("DOMContentLoaded", protegerBuscaContraAutofill);
@@ -421,16 +392,11 @@ async function listarProdutos() {
 
 async function buscarProdutos() {
     const termo = document.getElementById("termoBusca").value.trim();
-    const genero = document.getElementById("filtroGenero").value;
 
     try {
-        let url = `${API}/api/produtos`;
-
-        if (termo) {
-            url = `${API}/api/produtos/buscar?nome=${encodeURIComponent(termo)}`;
-        } else if (genero) {
-            url = `${API}/api/produtos/genero/${encodeURIComponent(genero)}`;
-        }
+        const url = termo
+            ? `${API}/api/produtos/buscar?nome=${encodeURIComponent(termo)}`
+            : `${API}/api/produtos`;
 
         renderizarProdutos(await (await fetch(url)).json());
 
@@ -572,7 +538,7 @@ function selecionarTamanho(produtoId, tamanho, quantidade) {
 async function adicionarAoCarrinho(produtoId) {
 
     if (!usuario) {
-        abrirModal();
+        window.location.href = "/login";
         return;
     }
 
@@ -583,8 +549,12 @@ async function adicionarAoCarrinho(produtoId) {
         return;
     }
 
+    const btn = document.getElementById(`btn-${produtoId}`);
+    btn.disabled = true;
+    btn.textContent = "Adicionando...";
+
     try {
-        await fetch(
+        const res = await fetch(
             `${API}/api/carrinho/${usuario.id}/produtos/${produtoId}?quantidade=1&tamanho=${encodeURIComponent(tamanho)}`,
             {
                 method: "POST",
@@ -592,20 +562,36 @@ async function adicionarAoCarrinho(produtoId) {
             }
         );
 
-        const btn = document.getElementById(`btn-${produtoId}`);
+        if (!res.ok) {
+            if (res.status === 401 || res.status === 403) {
+                window.location.href = "/login";
+                return;
+            }
+            throw new Error("Erro " + res.status);
+        }
 
-        btn.textContent = "Adicionado!";
-        btn.style.background = "var(--green)";
-        btn.style.color = "#000";
+        btn.textContent = "Adicionado! ✓";
+        btn.style.background = "var(--lilas)";
+        btn.style.color = "#fff";
 
         setTimeout(() => {
-            btn.textContent = usuario ? "Adicionar ao Carrinho" : "Entrar para comprar";
+            btn.textContent = "Adicionar ao Carrinho";
             btn.style.background = "";
             btn.style.color = "";
+            btn.disabled = false;
         }, 2000);
 
     } catch {
-        alert("Erro ao adicionar produto.");
+        btn.textContent = "Erro — tente novamente";
+        btn.style.background = "var(--red)";
+        btn.style.color = "#fff";
+        btn.disabled = false;
+
+        setTimeout(() => {
+            btn.textContent = "Adicionar ao Carrinho";
+            btn.style.background = "";
+            btn.style.color = "";
+        }, 3000);
     }
 }
 
