@@ -72,11 +72,11 @@
     <section class="categorias" id="categorias">
         <p class="section-title">Categorias</p>
         <div class="categorias-grid">
-            <a href="#produtos" class="categoria-card moletom"><span>Hood</span><strong>Moletons</strong><small>Ver colecao</small></a>
-            <a href="#produtos" class="categoria-card camiseta"><span>Shirt</span><strong>Camisetas</strong><small>Ver colecao</small></a>
-            <a href="#produtos" class="categoria-card calca"><span>Pants</span><strong>Calcas</strong><small>Ver colecao</small></a>
-            <a href="#produtos" class="categoria-card acessorio"><span>Cap</span><strong>Acessorios</strong><small>Ver colecao</small></a>
-            <a href="#produtos" class="categoria-card lancamento"><span>New</span><strong>Lancamentos</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card moletom" onclick="filtrarCategoria(event,'moletom')"><span>Hood</span><strong>Moletons</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card camiseta" onclick="filtrarCategoria(event,'camiseta')"><span>Shirt</span><strong>Camisetas</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card calca" onclick="filtrarCategoria(event,'calca')"><span>Pants</span><strong>Calcas</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card acessorio" onclick="filtrarCategoria(event,'acessorio')"><span>Cap</span><strong>Acessorios</strong><small>Ver colecao</small></a>
+            <a href="#produtos" class="categoria-card lancamento" onclick="filtrarCategoria(event,'lancamento')"><span>New</span><strong>Lancamentos</strong><small>Ver colecao</small></a>
         </div>
     </section>
 
@@ -410,9 +410,9 @@ async function cadastrar() {
 async function listarProdutos() {
     try {
         const res = await fetch(`${API}/api/produtos`);
-
-        renderizarProdutos(await res.json());
-
+        todosProdutos = await res.json();
+        document.querySelectorAll(".categoria-card").forEach(el => el.classList.remove("ativa"));
+        renderizarProdutos(todosProdutos);
     } catch {
         document.getElementById("listaProdutos").innerHTML =
             '<p class="vazio">Erro ao carregar produtos.</p>';
@@ -441,6 +441,24 @@ async function buscarProdutos() {
 }
 
 const fotosProdutos = {};
+let todosProdutos = [];
+
+const PALAVRAS_CATEGORIA = {
+    moletom:   p => /moletom|blusa/i.test(p.nome),
+    camiseta:  p => /camisa|oversized/i.test(p.nome),
+    calca:     p => /cal[cç]a/i.test(p.nome),
+    acessorio: p => /bone|boné|eclipse|tenis|tênis|corta.?vento/i.test(p.nome),
+    lancamento: p => true
+};
+
+function filtrarCategoria(event, cat) {
+    document.querySelectorAll(".categoria-card").forEach(el => el.classList.remove("ativa"));
+    event.currentTarget.classList.add("ativa");
+
+    const filtro = PALAVRAS_CATEGORIA[cat] || (() => true);
+    const filtrados = normalizarProdutosCatalogo(todosProdutos.filter(filtro));
+    renderizarProdutos(filtrados, true);
+}
 
 function renderizarProdutosAntigo(produtos) {
     const grid = document.getElementById("listaProdutos");
@@ -661,8 +679,8 @@ function ordemCorProduto(cor) {
     return Object.prototype.hasOwnProperty.call(ordem, cor) ? ordem[cor] : 99;
 }
 
-function renderizarProdutos(produtos) {
-    produtos = normalizarProdutosCatalogo(produtos);
+function renderizarProdutos(produtos, jaFiltrado) {
+    if (!jaFiltrado) produtos = normalizarProdutosCatalogo(produtos);
 
     const grid = document.getElementById("listaProdutos");
 

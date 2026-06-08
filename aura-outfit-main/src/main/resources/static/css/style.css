@@ -504,6 +504,11 @@ nav {
     position: relative;
 }
 
+.categoria-card.ativa {
+    outline: 2px solid var(--lilas);
+    outline-offset: -2px;
+}
+
 .categoria-card::after {
     content: '';
     position: absolute;
