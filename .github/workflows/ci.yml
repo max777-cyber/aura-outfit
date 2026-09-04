@@ -1,0 +1,41 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test (Java 17 + Maven)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build e testes
+        working-directory: aura-outfit-main
+        env:
+          GOOGLE_CLIENT_ID: mock-client-id
+          GOOGLE_CLIENT_SECRET: mock-client-secret
+          MP_ACCESS_TOKEN: mock-mp-token
+          APP_BASE_URL: http://localhost:8080
+          SPRING_PROFILES_ACTIVE: test
+        run: ./mvnw verify --no-transfer-progress
+
+      - name: Upload relatorio de testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: aura-outfit-main/target/surefire-reports/
+          retention-days: 7
