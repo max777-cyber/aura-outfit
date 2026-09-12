@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://aura-outfit-production-a01a.up.railway.app/sitemap.xml

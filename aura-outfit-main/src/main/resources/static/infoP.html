@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InformaÃ§Ãµes Pessoais</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/infoP.css"/>
+
+  <link rel="stylesheet" href="css/nav-user.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <nav>
+    <span class="logo">AURA OUTFIT</span>
+    <ul id="navLinks">
+        <li><a href="/">InÃ­cio</a></li>
+        <li><a href="/carrinho">Carrinho</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="#" class="btn-nav" onclick="abrirModal()">Criar Conta</a></li>
+    </ul>
+</nav>
+
+  <!-- CONTAINER -->
+  <main class="container">
+
+    <!-- HEADER -->
+    <section class="perfil-topo">
+      <div class="avatar">
+        C
+      </div>
+
+      <div class="perfil-info">
+        <h1>Carregando...</h1>
+        <p>Gerencie suas informaÃ§Ãµes pessoais e dados da conta.</p>
+      </div>
+    </section>
+
+    <!-- ALERTA -->
+    <section class="alerta">
+      <div class="alerta-icon">!</div>
+
+      <div class="alerta-texto">
+        Complete seus dados para melhorar sua experiÃªncia na plataforma.
+      </div>
+    </section>
+
+    <!-- CARD -->
+    <section class="card">
+
+      <div class="card-header">
+        <h2>InformaÃ§Ãµes pessoais</h2>
+        <p>Atualize seus dados pessoais e contato.</p>
+      </div>
+
+      <form class="formulario">
+
+        <div class="grid-2">
+
+          <div class="campo">
+            <label>Nome completo</label>
+            <input type="text" placeholder="Seu nome completo">
+          </div>
+
+          <div class="campo">
+            <label>E-mail</label>
+            <input type="email" value="maria@email.com" readonly>
+          </div>
+
+          <div class="campo">
+            <label>CPF</label>
+            <input type="text" id="cpf" placeholder="000.000.000-00">
+          </div>
+
+          <div class="campo">
+            <label>Telefone</label>
+            <input type="text" id="telefone" placeholder="(11) 99999-9999">
+          </div>
+
+          <div class="campo">
+            <label>Data de nascimento</label>
+            <input type="date">
+          </div>
+
+          <div class="campo">
+            <label>GÃªnero</label>
+
+            <select>
+              <option>Selecione</option>
+              <option>Feminino</option>
+              <option>Masculino</option>
+              <option>Prefiro nÃ£o informar</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- BOTÃ•ES -->
+        <div class="acoes">
+
+          <button type="button" class="btn-secundario">
+            Cancelar
+          </button>
+
+          <button type="submit" class="btn-primario">
+            Salvar alteraÃ§Ãµes
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+  <footer>
+    Â© 2026 Aura Outfit â€” Todos os direitos reservados
+  </footer>
+
+  <script src="informacoes.js"></script>
+
+  <script src="js/nav-user.js"></script>
+</body>
+</html>
+
