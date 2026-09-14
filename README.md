@@ -54,7 +54,7 @@ O projeto foi desenvolvido em equipe:
 |------|-------------|
 | Back-end, segurança, pagamentos e infraestrutura | [@max777-cyber](https://github.com/max777-cyber) |
 | Front-end (HTML, CSS e JavaScript) | [@duda-zip](https://github.com/duda-zip) |
-| Testes e QA | Pedro Henrique Correia — [@correia44](https://github.com/correia44) |
+| Testes e QA | [@correia44](https://github.com/correia44) |
 
 ---
 
