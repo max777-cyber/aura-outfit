@@ -251,4 +251,5 @@ Técnica em Informática — Colégio Engenheiro Salvador Arena (prev. 2026)
 
 **Pedro Henrique Correia** — Testes e QA, validação de fluxos e reporte de bugs  
 
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pedro-correia-476113437/)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/correia44)
